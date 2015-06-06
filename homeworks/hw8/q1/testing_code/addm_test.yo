@@ -1,0 +1,58 @@
+                      | # Assembly code to test the addm instruction
+  0x000:              | .pos 0
+                      |         # Set up success indicators
+  0x000: 30f600000000 |         irmovl 0x0, %esi    # test_1
+  0x006: 30f700000000 |         irmovl 0x0, %edi    # test_2
+                      | 
+  0x00c: 30f300030000 |         irmovl mem1, %ebx   # Store memory address
+  0x012: 30f400020000 |         irmovl stack, %esp  # Stack
+                      | 
+                      |         # Test 1
+  0x018: 30f104000000 |         irmovl $4, %ecx
+  0x01e: a03f         |         pushl %ebx       # The addm instruction may overwrite value
+                      |         # addm (%ebx), %ecx
+  0x020: e03100000000 |         addm (%ebx), %ecx  # added by hand
+  0x026: b03f         |         popl %ebx
+                      | 
+  0x028: 30f205000000 |         irmovl $5, %edx
+  0x02e: 6121         |         subl %edx, %ecx
+                      | 
+  0x030: 733c000000   |         je test_1
+                      | 
+                      |         # If test fails, indicate error and halt
+  0x035: 30f60e000000 |         irmovl 0xe, %esi
+  0x03b: 00           |         halt
+                      | 
+  0x03c:              | test_1:
+  0x03c: 30f601000000 |         irmovl 0x1, %esi    # test_1 passed
+                      | 
+                      |         # test_2
+  0x042: 30f204000000 |         irmovl $4, %edx
+                      |         # addm 4(%ebx), %edx
+  0x048: e03204000000 |         addm 4(%ebx), %edx     # added by hand 
+  0x04e: 735a000000   |         je test_2
+                      | 
+                      |         # If test_2 fails, indicate error and halt
+  0x053: 30f70e000000 |         irmovl 0xe, %edi
+  0x059: 00           |         halt
+                      | 
+  0x05a:              | test_2:
+  0x05a: 30f701000000 |         irmovl 0x1, %edi    # test_2 passed
+  0x060: 00           |         halt
+                      | 
+                      | 
+                      | 
+                      | 
+  0x200:              | .pos 0x200
+  0x200:              | stack:
+  0x200: ffffffff     |         .long 0xffffffff
+                      | 
+                      | 
+                      | 
+  0x300:              | .pos 0x300
+  0x300:              | mem1:
+  0x300: 01000000     |         .long 0x1
+                      | 
+  0x304:              | mem2:
+  0x304: fcffffff     |         .long 0xfffffffc
+                      | 

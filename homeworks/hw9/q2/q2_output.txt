@@ -1,0 +1,19 @@
+mode = direct mapped
+6076728 hits, 269350 misses, 6346078 addresses
+Direct Mapped Hit-rate: 0.957556
+Direct Mapped Miss-rate: 0.042444
+
+mode = 2-way set associative
+6182810 hits, 163268 misses, 6346078 addresses
+Direct Mapped Hit-rate: 0.974273
+Direct Mapped Miss-rate: 0.025727
+
+mode = 4-way set associative
+6208266 hits, 137812 misses, 6346078 addresses
+Direct Mapped Hit-rate: 0.978284
+Direct Mapped Miss-rate: 0.021716
+
+mode = fully associative
+6210016 hits, 136062 misses, 6346078 addresses
+Direct Mapped Hit-rate: 0.978560
+Direct Mapped Miss-rate: 0.021440

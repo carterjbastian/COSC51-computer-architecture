@@ -1,0 +1,53 @@
+                      | # sws, cs51, 2015
+                      | 
+  0x000:              | .pos 0
+                      | 	# set up stack
+  0x000: 30f40c010000 | 	irmovl stack, %esp
+                      | 
+                      | 
+                      | # main
+                      | 	
+  0x006: 30f002000000 | 	irmovl 2, %eax
+  0x00c: 8012000000   | 	call FUN
+  0x011: 00           | 	halt
+                      | 
+                      | 	# subroutine: %ebx <- FUN(%eax)
+                      | 	# promises:  only %ebx (and the esp) will change
+  0x012:              | FUN:
+                      | 	# if x = 0...
+  0x012: 2003         | 	rrmovl %eax, %ebx
+  0x014: 6033         | 	addl %ebx,%ebx
+  0x016: 7422000000   | 	jne recurse   # nz!
+                      | 	
+                      | 	#...then do base case
+  0x01b: 30f300000000 | 	irmovl 0, %ebx
+  0x021: 90           | 	ret
+                      | 
+                      | 	# x > 0
+  0x022:              | recurse:
+                      | 	# save x
+  0x022: a00f         | 	pushl %eax
+                      | 	
+                      | 	# get F(x-1)
+  0x024: 30f3ffffffff | 	irmovl $-1,%ebx
+  0x02a: 6030         | 	addl %ebx,%eax
+  0x02c: 8012000000   | 	call FUN
+                      | 	
+                      | 	# get F(x)
+  0x031: b00f         | 	popl %eax
+  0x033: 6003         | 	addl %eax, %ebx
+  0x035: 90           | 	ret
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 
+  0x10c:              | .pos 0x10C
+  0x10c:              | stack: 
+  0x10c: ffffffff     |         .long 0xFFFFFFFF # the top of the empty stack
+                      | 
+                      | 

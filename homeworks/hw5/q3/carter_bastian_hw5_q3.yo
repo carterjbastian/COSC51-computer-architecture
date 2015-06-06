@@ -1,0 +1,71 @@
+                      | # Hw5 Question 3 for CS51
+                      | # Carter Bastian, 4/30/2015
+                      | 
+  0x000:              | .pos 0
+                      |         # Set up Stack
+  0x000: 30f400050000 |         irmovl stack, %esp
+                      | 
+                      |         # Set up our testing framework
+                      |         # Put in values to make sure state-storage works
+  0x006: 30f103000000 |         irmovl $3, %ecx
+  0x00c: 30f203000000 |         irmovl $3, %edx
+  0x012: 30f303000000 |         irmovl $3, %ebx
+  0x018: 30f503000000 |         irmovl $3, %ebp
+  0x01e: 30f603000000 |         irmovl $3, %esi
+  0x024: 30f703000000 |         irmovl $3, %edi
+                      | 
+                      |         # Test with wrapping
+  0x02a: 30f0000000ff |         irmovl $0xff000000, %eax
+  0x030: 8064000000   |         call SHIFT4
+                      |         # %eax should be $0xf000000f
+                      | 
+                      |         # Test without wrapping
+  0x035: 30f000f00f00 |         irmovl $0x000ff000, %eax
+  0x03b: 8064000000   |         call SHIFT4
+                      |         # %eax should be $0x00ff0000        
+                      | 
+  0x040: 00           |         halt
+                      | 
+                      |         # subroutine: %eax <- %eax shifted 1
+  0x041:              | SHIFT1:
+                      |         # We use three registers, so we save old values here
+                      |         # This is callee saving
+  0x041: a01f         |         pushl %ecx
+  0x043: a02f         |         pushl %edx
+  0x045: a03f         |         pushl %ebx
+                      |         
+  0x047: 2001         |         rrmovl %eax, %ecx # We're going to double %eax to shift it
+  0x049: 6010         |         addl %ecx, %eax # %eax now contains %eax * 2 (%ecx contains orig)        
+                      | 
+                      |         # Set up our increments
+  0x04b: 30f200000000 |         irmovl $0, %edx # %edx contains 0
+  0x051: 30f301000000 |         irmovl $1, %ebx # %ebx contains 1
+                      | 
+  0x057: 6121         |         subl %edx, %ecx  # Compare 0 with our orriginal value
+                      |         # If original value is Less than 0, our increment is 1
+  0x059: 2232         |         cmovl %ebx, %edx
+                      | 
+  0x05b: 6020         |         addl %edx, %eax # "Wrap arround" if necessary
+                      | 
+                      |         # Restore orginal state - callee saving
+  0x05d: b03f         |         popl %ebx
+  0x05f: b02f         |         popl %edx
+  0x061: b01f         |         popl %ecx
+                      | 
+                      |         # Return
+  0x063: 90           |         ret
+                      | 
+                      |         #Subroutine <- %eax <- %eax shifted 4 and wrapped as necessary
+  0x064:              | SHIFT4:
+                      |         # Shift once four times
+  0x064: 8041000000   |         call SHIFT1
+  0x069: 8041000000   |         call SHIFT1
+  0x06e: 8041000000   |         call SHIFT1
+  0x073: 8041000000   |         call SHIFT1
+                      |         # return once finished
+  0x078: 90           |         ret
+                      | 
+  0x500:              | .pos 0x500
+  0x500:              | stack:
+  0x500: ffffffff     |         .long 0xFFFFFFFF # Top of the Empty Stack
+                      | 

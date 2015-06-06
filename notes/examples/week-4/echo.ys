@@ -1,0 +1,61 @@
+# sws, cs51, april 2015
+
+.pos 0
+		# set up stack
+    		irmovl stack, %esp
+
+echo: 		call GETC
+		call PUTC
+		jmp echo
+
+# subroutine: get a char into %eax
+GETC: 		pushl %ebx  # since we stomp on that
+	
+		# read KBSR until it's 1
+		irmovl pKBSR, %eax 		
+		mrmovl (%eax), %eax
+KBNotReady:	mrmovl (%eax), %ebx
+		addl %ebx,%ebx
+		je KBNotReady # jmps if zero
+	
+		# got a character---get it into %ecx
+		irmovl pKBDR, %eax
+		mrmovl (%eax), %eax	
+		mrmovl (%eax), %eax
+	
+		popl %ebx
+		ret
+		
+# subroutine: send %eax to display
+PUTC: 		pushl %ebx 
+		pushl %ecx
+
+		# read DSR until it's 1
+		irmovl pDSR, %ebx
+		mrmovl (%ebx),%ebx
+DNotReady: 	mrmovl (%ebx), %ecx
+		addl %ecx,%ecx
+		je DNotReady # jmps if zero
+
+		# write the char!
+		irmovl pDDR, %ebx
+		mrmovl (%ebx), %ebx
+		rmmovl %eax, (%ebx)	
+	
+		popl %ecx
+		popl %ebx
+		ret
+	
+	
+# these named locations store the addresses	of the registers
+pKBSR: .long 0x00FFFE00
+pKBDR: .long 0x00FFFE04
+pDSR:  .long 0x00FFFE08
+pDDR:  .long 0x00FFFE0C
+
+.pos 0x10C
+stack: 
+.long 0xFFFFFFFF # the top of the empty stack
+
+
+	

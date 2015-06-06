@@ -1,0 +1,71 @@
+# Hw5 Question 3 for CS51
+# Carter Bastian, 4/30/2015
+
+.pos 0
+        # Set up Stack
+        irmovl stack, %esp
+
+        # Set up our testing framework
+        # Put in values to make sure state-storage works
+        irmovl $3, %ecx
+        irmovl $3, %edx
+        irmovl $3, %ebx
+        irmovl $3, %ebp
+        irmovl $3, %esi
+        irmovl $3, %edi
+
+        # Test with wrapping
+        irmovl $0xff000000, %eax
+        call SHIFT4
+        # %eax should be $0xf000000f
+
+        # Test without wrapping
+        irmovl $0x000ff000, %eax
+        call SHIFT4
+        # %eax should be $0x00ff0000        
+
+        halt
+
+        # subroutine: %eax <- %eax shifted 1
+SHIFT1:
+        # We use three registers, so we save old values here
+        # This is callee saving
+        pushl %ecx
+        pushl %edx
+        pushl %ebx
+        
+        rrmovl %eax, %ecx # We're going to double %eax to shift it
+        addl %ecx, %eax # %eax now contains %eax * 2 (%ecx contains orig)        
+
+        # Set up our increments
+        irmovl $0, %edx # %edx contains 0
+        irmovl $1, %ebx # %ebx contains 1
+
+        subl %edx, %ecx  # Compare 0 with our orriginal value
+        # If original value is Less than 0, our increment is 1
+        cmovl %ebx, %edx
+
+        addl %edx, %eax # "Wrap arround" if necessary
+
+        # Restore orginal state - callee saving
+        popl %ebx
+        popl %edx
+        popl %ecx
+
+        # Return
+        ret
+
+        #Subroutine <- %eax <- %eax shifted 4 and wrapped as necessary
+SHIFT4:
+        # Shift once four times
+        call SHIFT1
+        call SHIFT1
+        call SHIFT1
+        call SHIFT1
+        # return once finished
+        ret
+
+.pos 0x500
+stack:
+        .long 0xFFFFFFFF # Top of the Empty Stack
+

@@ -1,0 +1,272 @@
+# CS51 HW5 Q4, Carter Bastian
+
+# Execution starts at address 0
+.pos 0
+
+output: # Default output is 0x0e => if something goes wrong, we know
+        .long 0x0e
+
+init:
+        irmovl stack, %esp    # set up stack pointer
+        call main             # Execute the main program
+
+        # put the output in edx (for testing)
+        irmovl output, %edi
+        mrmovl (%edi), %edx
+ 
+        halt                  # Terminate the program
+
+main:
+        irmovl end_pointer, %eax
+        rmmovl %esp, (%eax) # Save the end pointer
+
+        irmovl input, %edx
+        mrmovl (%edx), %eax   # Month BCD in %eax
+        mrmovl 1(%edx), %ecx  # Day BCD in %ecx
+
+        # Fix the BCDs so they only have their last two bits
+        irmovl $0x000000ff, %ebx
+        andl %ebx, %eax
+        andl %ebx, %ecx
+
+        # Convert the month into a hex value from a BCD
+        pushl %ecx # We only care about %ecx, -> caller-saving
+        call convert_bcd
+        rrmovl %eax, %ecx
+        popl %eax
+        pushl %ecx # save hex month value
+        call convert_bcd
+        popl %ecx # retrieve hex month value
+
+        # Now %eax contains the hex value of the day
+        # and %ecx containt the hex value of the month
+
+        # Go month-by-month to test for each case
+        # month = 0 -> false output
+        irmovl $0, %edi
+        subl %ecx, %edi
+        je false_out
+
+        # month = 1 -> Jan -> 31-day-month
+        irmovl $1, %edi
+        subl %ecx, %edi
+        je parse_31_day_month 
+
+        # month = 2 -> feb -> 28-day-month
+        irmovl $2, %edi
+        subl %ecx, %edi
+        je parse_28_day_month
+
+        # month = 3 -> March -> 31-day-month
+        irmovl $3, %edi
+        subl %ecx, %edi
+        je parse_31_day_month
+ 
+        # month = 4 -> April -> 30-day-month
+        irmovl $4, %edi
+        subl %ecx, %edi
+        je parse_30_day_month
+
+        # month = 5 -> May -> 31-day-month 
+        irmovl $5, %edi
+        subl %ecx, %edi
+        je parse_31_day_month
+
+        # month = 6 -> June -> 30-day-month
+        irmovl $6, %edi
+        subl %ecx, %edi
+        je parse_30_day_month
+
+        # month = 7 -> July -> 31-day-month
+        irmovl $7, %edi
+        subl %ecx, %edi
+        je parse_31_day_month
+
+        # month = 8 -> August -> 31-day-month
+        irmovl $8, %edi
+        subl %ecx, %edi
+        je parse_31_day_month
+
+        # month = 9 -> September -> 30-day-month
+        irmovl $9, %edi
+        subl %ecx, %edi
+        je parse_30_day_month
+
+        # month = 10 -> October -> 31-day-month
+        irmovl $0xa, %edi
+        subl %ecx, %edi
+        je parse_31_day_month
+
+        # month = 11 -> November -> 30-day-month
+        irmovl $0xb, %edi
+        subl %ecx, %edi
+        je parse_30_day_month
+
+        # month = 12 -> December -> 31-day-month
+        irmovl $0xc, %edi
+        subl %ecx, %edi
+        je parse_31_day_month
+
+        # month >= 13 -> false_out
+        irmovl $0xd, %edi
+        subl %ecx, %edi
+        jle false_out
+
+       
+        ret
+
+
+
+convert_bcd:  # Converts a 1-byte BCD in %eax to a hex value
+
+        # figure out the 10's digit and save it in %edx
+        irmovl $0xf0, %ecx
+        andl %eax, %ecx # Register %ecx contains the 10's value isolated
+        
+        irmovl $0xa0, %edi    # For comparison
+        subl %ecx, %edi       # Is our 10's digit less than 10?
+        jle error_out         # If not, error
+
+        irmovl $0x40, %edi    
+        subl %ecx, %edi       # Is our 10's digit less than 4?
+        jle false_out         # If not, false output
+
+        # Check each of the remaining cases for the 10's digit
+        # i.e. if BCD 10's digit = 3, %edx <- 0x3
+        irmovl $0x30, %edi
+        irmovl $0x3, %ebx
+        subl %ecx, %edi
+        cmove %ebx, %edx
+
+        irmovl $0x20, %edi
+        irmovl $0x2, %ebx
+        subl %ecx, %edi
+        cmove %ebx, %edx
+        
+        irmovl $0x10, %edi
+        irmovl $0x1, %ebx
+        subl %ecx, %edi
+        cmove %ebx, %edx
+
+        irmovl $0x0, %edi
+        irmovl $0x0, %ebx
+        subl %ecx, %edi
+        cmove %ebx, %edx
+
+        # Now, %edx contains the 10's value of the BCD
+        # %eax still has the original value of the BCD
+        # Now Store the 1's value of the BCD into %ebx
+        irmovl $0x0f, %ebx
+        andl %eax, %ebx # %ebx now has only the 1's decimal value
+
+        # Test for bad BCD
+        irmovl $0x0a, %edi    # For comparison
+        subl %ebx, %edi       # Is our 1's digit less than 10?
+        jle error_out         # If not, error
+
+        # Not we have our 10's decimal in %edx and our 1's decimal in %ebx
+        # We'll sum them up in %eax
+        irmovl $0, %eax       # Sum <- 0
+        irmovl $0xa, %ecx     # Adding 10 for each 10's decimal
+        irmovl $-1, %edi      # Decrementing the 10's index by 1
+
+        # %eax = sum, %edx = 10's dec., %ebx = 1's dec.
+        # %ecx = 10 (sum increment), %edi = -1 (10's index decrement)
+loop:
+        rrmovl %edx, %esi
+        addl %esi, %esi
+        je loop_done
+        addl %ecx, %eax   # Add 10 to sum
+        addl %edi, %edx   # Decrement 10's index
+        jmp loop
+
+loop_done:        
+        addl %ebx, %eax   # Account for the 1's decimal
+        ret               # Return with hex value of BCD in %eax
+
+# Assumes hex value of the day is in register %eax
+# and that the month value encodes a 31-day month
+parse_31_day_month:
+        # If day = 0, false_out
+        rrmovl %eax, %edi
+        addl %edi, %edi
+        je false_out
+
+        # If day > 31, false_out
+        irmovl $31, %edi
+        subl %eax, %edi # %ecx = %ecx - %eax
+        jl false_out
+
+        # Otherwise, we're good, so true_out
+        jmp true_out
+
+parse_30_day_month:
+        # If day = 0, false_out
+        rrmovl %eax, %edi
+        addl %edi, %edi
+        je false_out
+
+        # If day > 30, false out
+        irmovl $30, %edi
+        subl %eax, %edi
+        jl false_out
+
+        # Otherwise, we're good, so true_out
+        jmp true_out
+
+parse_28_day_month:
+        # If day= 0, false_out
+        rrmovl %eax, %edi
+        addl %edi, %edi
+        je false_out
+
+        # If day > 28, false_out
+        irmovl $28, %edi
+        subl %eax, %edi
+        jl false_out
+
+        # Otherwise, we're good, so true_out
+        jmp true_out
+
+true_out:
+        irmovl $0x01, %eax
+        irmovl output, %ebx
+        rmmovl %eax, (%ebx)
+
+
+        irmovl end_pointer, %ebx
+        mrmovl (%ebx), %esp
+        ret
+
+false_out:
+        irmovl $0x00, %eax
+        irmovl output, %ebx
+        rmmovl %eax, (%ebx)
+
+        irmovl end_pointer, %ebx
+        mrmovl (%ebx), %esp
+        ret
+
+
+error_out:
+        irmovl $0x0e, %eax
+        irmovl output, %ebx
+        rmmovl %eax, (%ebx)
+ 
+        irmovl end_pointer, %ebx
+        mrmovl (%ebx), %esp
+        ret
+
+
+.align 16
+input:  # Asking about "April 20"
+        .byte 0x04
+        .byte 0x20
+
+
+end_pointer:
+        .long 0x00
+
+.pos 0x500
+stack:
+        .long 0xffffffff 

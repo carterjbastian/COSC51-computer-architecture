@@ -1,0 +1,12 @@
+# sws, cs51, 2015
+
+.pos 0
+ping: 
+	jmp pong
+	nop
+	nop
+	nop
+	nop	
+pong: 
+	jmp ping
+

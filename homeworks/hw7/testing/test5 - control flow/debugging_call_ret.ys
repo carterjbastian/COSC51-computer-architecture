@@ -1,0 +1,15 @@
+# Fixing the ESP update on call (I think)
+.pos 0
+        irmovl stack, %esp
+        rrmovl %esp, %eax
+        call subroutine
+        rrmovl %esp, %edx
+        halt
+
+subroutine:
+        rrmovl %esp, %ecx
+        ret
+
+.pos 0x200
+stack:
+    .long 0xffffffff

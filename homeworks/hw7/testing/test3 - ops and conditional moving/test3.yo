@@ -1,0 +1,58 @@
+                      | # Test3: operations and conditional moving
+  0x000:              | .pos 0
+                      |         # some operands for testing
+  0x000: 30f72c010000 |         irmovl mem, %edi
+  0x006: 30f101000000 |         irmovl $1, %ecx
+  0x00c: 30f20f000000 |         irmovl $15, %edx
+  0x012: 2023         |         rrmovl %edx, %ebx
+                      | 
+  0x014: 30f6ffffffff |         irmovl $-1, %esi     #Failure indicator
+  0x01a: 30f501000000 |         irmovl $1, %ebp      # Success indicator
+                      | 
+                      |         # Add testing
+  0x020: 6013         |         addl %ecx, %ebx
+  0x022: 403704000000 |         rmmovl %ebx, 4(%edi) # => 16 = 0x10
+                      | 
+                      |         # Subtractions and conditional move testing
+  0x028: 2023         |         rrmovl %edx, %ebx
+  0x02a: 6113         |         subl %ecx, %ebx     # => 14 = 0xe
+  0x02c: 403708000000 |         rmmovl %ebx, 8(%edi)
+                      | 
+                      |         # shouldn't move
+  0x032: 30f001000000 |         irmovl $1, %eax
+  0x038: 2160         |         cmovle %esi, %eax
+  0x03a: 2260         |         cmovl %esi, %eax
+  0x03c: 2360         |         cmove %esi, %eax
+  0x03e: 4007fcffffff |         rmmovl %eax, -4(%edi)
+                      | 
+                      |         # should work
+  0x044: 30f0ffffffff |         irmovl $-1, %eax
+  0x04a: 2450         |         cmovne %ebp, %eax
+  0x04c: 4007f8ffffff |         rmmovl %eax, -8(%edi)
+                      | 
+  0x052: 30f0ffffffff |         irmovl $-1, %eax
+  0x058: 2650         |         cmovg %ebp, %eax
+  0x05a: 4007f4ffffff |         rmmovl %eax, -12(%edi)
+                      | 
+  0x060: 30f0ffffffff |         irmovl $-1, %eax
+  0x066: 2550         |         cmovge %ebp, %eax
+  0x068: 4007f0ffffff |         rmmovl %eax, -16(%edi)
+                      | 
+                      | 
+                      |         # Test andl and xorl
+  0x06e: 2023         |         rrmovl %edx, %ebx
+  0x070: 6213         |         andl %ecx, %ebx
+  0x072: 40370c000000 |         rmmovl %ebx, 12(%edi) # => 1
+                      | 
+  0x078: 6323         |         xorl %edx, %ebx   # => e
+  0x07a: 403710000000 |         rmmovl %ebx, 16(%edi)
+                      | 
+  0x080: 00           |         halt
+                      |         
+                      | 
+                      | 
+  0x12c:              | .pos 300
+  0x12c:              | mem:
+  0x12c: ffffffff     |         .long 0xffffffff
+                      | 
+                      | 

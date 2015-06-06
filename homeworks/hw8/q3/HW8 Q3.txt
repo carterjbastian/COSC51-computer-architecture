@@ -1,0 +1,25 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\b\fs24 \cf0 HW8 Q3:
+\b0 \
+\
+I produced the assembly from my c-program with the command\
+> gcc -m32 -Wall -01 -S -o carter_bastian_q2.s carter_bastian_q2.c\
+\
+carter_bastian_hw5_q4.ys has the assembly code written before to do the same thing as carter_bastian_q2.c\
+\
+\ul Comparison:\ulnone \
+Interestingly enough, the two assembly programs are about the same length (in terms of lines of code). This is surprising because the assembly from my C function is in x86 while the one written by hand is in y86, so I would expect that the extra efficiency in x86 would make the assembly code from the C program significantly shorter. This is not the case once you consider that my hand-written assembly code consists largely of comments.\
+\
+I think one of the reasons for this is that there is much more abstraction in the assembly generated from the C-program. Using abstraction in high-level code leads to slightly more verbose and complicated assembly (in return for much easier programming).\
+\
+Further, both are similar in that, at some point, the main functionality comes down to a series of conditional instructions. However, in my hand-generated assembly this was mostly in the form of conditional jumps, but in the C-generated assembly this was mostly in the form of conditional assignments.\
+\
+Also, the C-generated code automatically produced quite a few globals which it used to further optimize all of the conditional statements and such and used different conditional jumps when working with the BCD-to-Decimal value conversion.\
+\
+Overall, the two assembly codes do similar things, just reworded into different ways (and probably the C-generated is assembly rewords it into more efficient and effective ways than my hand-generated assembly).\
+}

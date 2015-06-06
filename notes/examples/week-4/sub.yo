@@ -1,0 +1,12 @@
+  0x000: 00           | # sws, cs51, 2015
+                      | 
+  0x000:              | .pos 0
+                      | 
+                      | 
+  0x000: 30f0ffffffff | 	irmovl -1, %eax
+  0x006: 30f303000000 | 	irmovl 3, %ebx
+                      | 
+                      | # %ebx <- %ebx + %eax
+                      | 
+  0x00c: 6103         | 	subl %eax, %ebx
+                      | 

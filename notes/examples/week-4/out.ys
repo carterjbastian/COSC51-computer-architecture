@@ -1,0 +1,27 @@
+# Carter's output assembly code, CS51
+.pos 0
+
+start:    
+          irmovl $0x41, %ecx      #Put an ASCII value into ECX
+
+          # Read DSR
+          irmovl pDSR, %eax
+          mrmovl (%eax), %eax     # Contains address of DSR
+
+DNotReady:
+          mrmovl (%eax), %ebx
+          addl %ebx, %ebx
+          je DNotReady            # Jumps if 0
+
+          # Otherwise, get the data and write it
+          irmovl pDDR, %eax
+          mrmovl (%eax), %eax
+          rmmovl %ecx, (%eax)
+
+          halt
+
+
+
+# Named Locations
+pDSR:     .long $0x00fffe08
+pDDR:     .long $0x00fffe0c

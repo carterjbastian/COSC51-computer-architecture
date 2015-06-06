@@ -1,0 +1,10 @@
+# data_haz.ys – assembly code to demonstrate a data hazard in
+# a poorly-implemented pipelined y86 processor
+.pos 0
+        irmovl $1, %eax
+        irmovl $2, %ebx
+        nop
+        irmovl $11, %eax
+        irmovl $12, %ebx
+        addl %eax, %ebx
+        halt #Should end with 23 in %ebx

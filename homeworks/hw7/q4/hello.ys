@@ -1,0 +1,61 @@
+# HW7 Q4 – hello.ys
+# Writes "hello world!" to the TTY
+.pos 0
+        irmovl DDR, %ecx      # Mem location of DDR's address
+        mrmovl (%ecx), %ecx   # DDR's address to %ecx
+
+        # Write "h"
+        irmovl 0x68, %ebx
+        rmmovl %ebx, (%ecx)
+
+        # Write "e"
+        irmovl 0x65, %ebx
+        rmmovl %ebx, (%ecx)
+
+        # And so forth
+        irmovl 0x6c, %ebx # l
+        rmmovl %ebx, (%ecx)
+
+        irmovl 0x6c, %ebx # l
+        rmmovl %ebx, (%ecx)
+
+        irmovl 0x6f, %ebx # o
+        rmmovl %ebx, (%ecx)
+
+        irmovl 0x20, %ebx # space
+        rmmovl %ebx, (%ecx)
+
+
+        irmovl 0x77, %ebx # w
+        rmmovl %ebx, (%ecx)
+
+        irmovl 0x6f, %ebx # o
+        rmmovl %ebx, (%ecx)
+
+        irmovl 0x72, %ebx # r
+        rmmovl %ebx, (%ecx)
+
+        irmovl 0x6c, %ebx # l
+        rmmovl %ebx, (%ecx)
+
+        irmovl 0x64, %ebx # d
+        rmmovl %ebx, (%ecx)
+
+        irmovl 0x21, %ebx # !
+        rmmovl %ebx, (%ecx)
+
+        halt
+
+# Memory mapped io
+.pos 0x300
+KBSR:
+        .long 0x00fffe00
+
+KBDR:
+        .long 0x00fffe04
+
+DSR:
+        .long 0x00fffe08
+
+DDR:
+        .long 0x00fffe0c

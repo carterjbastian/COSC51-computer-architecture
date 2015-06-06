@@ -1,0 +1,23 @@
+                      | # Test2: Moving Data
+                      | # Tests irmovl, rmmovl, mrmovl, and rrmovl
+  0x000:              | .pos 0
+                      |         # Test immediate-to-reg moves
+  0x000: 30f003000000 |         irmovl $3, %eax
+  0x006: 30f1ffffffff |         irmovl $-1, %ecx
+  0x00c: 30f30c010000 |         irmovl mem_location, %ebx
+                      | 
+                      |         # Test Register to memory moves
+  0x012: 400304000000 |         rmmovl %eax, 4(%ebx)
+                      | 
+                      |         # Test memory to register moves
+  0x018: 502300000000 |         mrmovl (%ebx), %edx
+  0x01e: 507304000000 |         mrmovl 4(%ebx), %edi
+                      | 
+                      |         # Test reg-reg moves
+  0x024: 2076         |         rrmovl %edi, %esi
+                      | 
+  0x026: 00           |         halt
+                      | 
+  0x10c:              | .pos 0x10c
+  0x10c:              | mem_location:
+  0x10c: ffffffff     |         .long 0xffffffff

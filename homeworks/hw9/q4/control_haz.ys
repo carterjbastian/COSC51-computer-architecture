@@ -1,0 +1,30 @@
+.pos 0
+        irmovl $1, %eax
+        nop #avoiding data hazards
+        nop
+        nop
+        addl %eax , %ebx
+        irmovl $5, %ecx
+        irmovl $0x100, %edx
+        nop # Avoid data hazard
+        subl %eax, %ebx
+        jne target
+
+done:
+        nop
+        nop
+        nop
+        nop
+        rmmovl %ecx, 4(%edx)
+        halt
+        nop
+        nop
+        nop
+        nop
+
+target:
+        halt
+        nop
+        nop
+        nop
+        jmp done:   

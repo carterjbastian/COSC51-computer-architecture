@@ -1,0 +1,103 @@
+                      | # Testing control flow: jxx, call, ret
+  0x000:              | .pos 0
+                      |         # Set up stack
+  0x000: 30f400030000 |         irmovl stack, %esp
+  0x006: 30f001000000 |         irmovl $1, %eax # Success/error indicator
+  0x00c: 30f105000000 |         irmovl $5, %ecx
+  0x012: 30f201000000 |         irmovl $1, %edx
+                      | 
+                      |         # Test absolute jumping
+  0x018: 7024000000   |         jmp jmp_test #Should work
+  0x01d: 30f00e000000 |         irmovl $0xe, %eax
+  0x023: 00           |         halt
+                      | 
+  0x024:              | jmp_test:
+                      |         # Set the condition codes for testing
+  0x024: 2023         |         rrmovl %edx, %ebx #dummy value
+  0x026: 6113         |         subl %ecx, %ebx   #compare by evaluating 1 - 5
+                      |         
+                      |         # These shouldn't work
+  0x028: 73db000000   |         je error
+  0x02d: 76db000000   |         jg error
+  0x032: 75db000000   |         jge error
+                      | 
+  0x037: 7441000000   |         jne jne_test # Should jump
+  0x03c: 70db000000   |         jmp error
+                      | 
+  0x041:              | jne_test:
+  0x041: 714b000000   |         jle jle_test # Should jump
+  0x046: 70db000000   |         jmp error
+                      | 
+  0x04b:              | jle_test:
+  0x04b: 7255000000   |         jl jl_test # Should jump
+  0x050: 70db000000   |         jmp error
+                      | 
+  0x055:              | jl_test:
+                      | 
+                      |         # Switch up the order
+  0x055: 2013         |         rrmovl %ecx, %ebx
+  0x057: 6123         |         subl %edx, %ebx   #compare by evaluating 5 - 1
+                      | 
+                      |         # These shouldn't jump
+  0x059: 73db000000   |         je error
+  0x05e: 72db000000   |         jl error
+  0x063: 71db000000   |         jle error
+                      | 
+  0x068: 7672000000   |         jg jg_test
+  0x06d: 70db000000   |         jmp error
+                      | 
+  0x072:              | jg_test:
+  0x072: 757c000000   |         jge jge_test
+  0x077: 70db000000   |         jmp error
+                      | 
+  0x07c:              | jge_test:
+                      | 
+                      |         # One more switch
+  0x07c: 2013         |         rrmovl %ecx, %ebx
+  0x07e: 6113         |         subl %ecx, %ebx
+                      | 
+  0x080: 74db000000   |         jne error #shouldn't jump
+                      | 
+  0x085: 738f000000   |         je call_ret_test # Should jump
+  0x08a: 70db000000   |         jmp error
+                      | 
+  0x08f:              | call_ret_test:
+                      |         # At this point, we have tested all jumping and
+                      |         # Conditional jumps.
+                      | 
+  0x08f: 2005         |         rrmovl %eax, %ebp #Move the success indicator for jmping to %ebp
+  0x091: 30f00e000000 |         irmovl $0xe, %eax
+                      | 
+                      | 
+                      |         # Now we test call / ret
+                      | 
+  0x097: 30f1efbeadde |         irmovl $0xdeadbeef, %ecx
+  0x09d: 2012         |         rrmovl %ecx, %edx
+                      | 
+  0x09f: 80c2000000   |         call subroutine_1
+  0x0a4: 30f6cefaefbe |         irmovl $0xbeefface, %esi
+  0x0aa: 406410000000 |         rmmovl %esi, 16(%esp)
+  0x0b0: 30f2adddba0a |         irmovl $0xabaddad, %edx
+  0x0b6: 80d4000000   |         call subroutine_2
+                      | 
+  0x0bb: 30f001000000 |         irmovl $1, %eax
+  0x0c1: 00           |         halt
+                      |         
+                      | 
+  0x0c2:              | subroutine_1:
+  0x0c2: 402408000000 |         rmmovl %edx, 8(%esp)
+  0x0c8: 30f2edfefeca |         irmovl $0xcafefeed, %edx
+  0x0ce: 80d4000000   |         call subroutine_2
+  0x0d3: 90           |         ret
+                      | 
+  0x0d4:              | subroutine_2:
+  0x0d4: 402410000000 |         rmmovl %edx, 16(%esp)
+  0x0da: 90           |         ret
+                      | 
+  0x0db:              | error:
+  0x0db: 30f0eeeeeeee |         irmovl $0xeeeeeeee, %eax
+  0x0e1: 00           |         halt
+                      | 
+  0x300:              | .pos 0x300
+  0x300:              | stack:
+  0x300: ffffffff     |         .long 0xffffffff

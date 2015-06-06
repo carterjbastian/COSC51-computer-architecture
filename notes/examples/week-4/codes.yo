@@ -1,0 +1,10 @@
+                      | # sws, cs51, 2015
+                      | 
+  0x000:              | .pos 0
+  0x000: 10           | 	nop
+  0x001: c00fff0f0000 | 	rmmovl %eax, 0x0FFF
+  0x007: 400f00100000 | 	rmmovl %eax, 0x1000
+  0x00d: 400ffc1f0000 | 	rmmovl %eax, 0x1FFC
+  0x013: 400f00200000 | 	rmmovl %eax, 0x2000
+  0x019: 00           | 	halt
+                      | 	

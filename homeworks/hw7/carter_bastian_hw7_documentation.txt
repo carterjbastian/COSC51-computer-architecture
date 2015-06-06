@@ -1,0 +1,77 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\b\fs24 \cf0 HW7 Documentation
+\b0 :\
+\
+\ul Q1: Memory Set Up\ulnone \
+I hooked up 4kb of RAM as per the instructions as well as my sample IO, though late I switched to the IO circuit you provided. See my testing folder for information on how I tested this question.\
+\
+\ul Q2: FSM\ulnone \
+I made the FSM as per the instructions. Note that reseting the system clears all RAM including the io circuit and sends the current state to 0x000000 (AKA the "Top" State). The spreadsheet shows the states relatively clearly. The only FSM states that are strange (AKA not instructions) are the:\
+
+\i I. TOP state (0x000000)
+\i0  which simply fetches the next instruction from memory so that we can determine the next state based on the next instruction's icode,\
+
+\i II. Write back valM only (0x000001)
+\i0  which is a necessary intermediary step between some instruction states and the TOP state in order to clock the changes to the registers from the value of valM,\
+and\
+
+\i III. Write back valM to PC register (0x000002)
+\i0  which is a necessary intermediary step between some instruction states and the TOP state in order to clock the changes to the PC from the value of valM.\
+\
+The rest of the states in the FSM are only instruction states which wiggle the valves appropriately to carry out the intended instruction and then redirect to TOP (sometimes waiting for DMemReady or IMemReady to be 1 before redirecting).\
+\
+\
+\ul Q3: Control ROM\ulnone \
+\
+A General Note: I made the spreadsheet in Apple's "Numbers" software, a horrible replication of Excel. As such, the fsm2hex tool wouldn't work properly and I had to write the control.hex file by hand.\
+\
+Also, I ordered the spreadsheet backwards in terms of bits but forwards in terms of the pseudo-sequential processing stages. Keep that in mind when reading the state Hex Values.\
+\
+
+\i I. FSM-Only Bits (24-31)
+\i0 \
+The "Next State Select Bits" determine which of four ways the next state of the FSM will be determined. \
+(00) => stay in the current state. Only the "halt" instruction uses this select value\
+(01) => Go to valN (AKA the "TOP" state at ROM addr. 0x0). All states that aren't dependent on memory use this select value (except "halt").\
+(10) => Self-loop until Data memory is done with whatever it's doing, then go to valN (all states that assert DMemReq use this value).\
+(11) => Self-loop until Instruction memory is successfully loaded. Then go to the state encoded by our next instruction ("11" + "icode").\
+\
+The valN bitstring is the control ROM address of the TOP state (or an intermediary state between an instruction and TOP for clocking purposes).\
+\
+
+\i II. Fetch Bits
+\i0  (20 - 23)\
+Wiggle the valves to request memory, increment the PC appropriately, and select valC appropriately.\
+\
+
+\i III. Decode Bits (14 - 19)
+\i0 \
+Wiggle the valves to work with the registers.\
+\
+
+\i IV. Execute Bits (9 - 13)
+\i0 \
+Wiggle the valves to get the right values into the ALU, select the right ALU operation, and load the condition codes if necessary.\
+\
+
+\i V. Memory Bits (3 - 8)
+\i0 \
+Wiggle the valves to choose the right memory address and data value if writing/reading to/from RAM.\
+\
+
+\i VI. PC-Update Bits (0 - 2)
+\i0 \
+Wiggle the valves to choose the next PC correctly and load it into the PC register if necessary.\
+\
+\
+\ul Q4 - hello.ys\ulnone \
+hello.ys simply gets the value of the KBDR pseudo-RAM memory location into %ecx and then does a series of register-memory moves of ASCII values for each character in "hello world!" in order from %ebx to M[0x00fffe0c]. I tested this by loading the hello.hex file into the first RAM module and enabling ticks (at a high speed) until the program hits the HALT state. If you do this, you'll see "hello world!" printed on the Logisim TTY.\
+\
+\ul RAM folder:\ulnone \
+You may be wondering what's up with the RAM folder. It's just a fun thing I did that you might appreciate. I would encourage you to follow the instructions in the README and check it out. It's not a problem on the assignment, but it's worth looking at.\
+}

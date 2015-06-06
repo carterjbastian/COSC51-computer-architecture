@@ -1,0 +1,13 @@
+# sws, cs51, 2015
+
+.pos 0
+
+
+	irmovl -1, %eax
+	irmovl 3, %ebx
+
+# %ebx <- %ebx + %eax
+
+	subl %eax, %ebx
+
+	halt

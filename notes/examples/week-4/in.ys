@@ -1,0 +1,24 @@
+# sws, cs51, april 2015
+
+.pos 0
+
+start:		irmovl pKBSR, %eax # read KBSR until it's 1
+		mrmovl (%eax), %eax
+KBNotReady: 	mrmovl (%eax), %ebx
+		addl %ebx,%ebx
+		je KBNotReady # jmps if zero
+	
+		# got a character---get it into %ecx
+		irmovl pKBDR, %eax
+		mrmovl (%eax), %eax	
+		mrmovl (%eax), %ecx
+	
+		# go back
+		jmp start
+	
+# these named locations store the addresses	of the registers
+pKBSR: .long 0x00FFFE00
+pKBDR: .long 0x00FFFE04
+
+
+	

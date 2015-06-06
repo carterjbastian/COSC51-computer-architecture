@@ -1,0 +1,14 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1344\cocoasubrtf720
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 Justification and Explanation for Carter Bastian's Homework 1\
+\
+Question 1:\
+I use an XOR gate to test if exactly one of the inputs is a 1. I then send the inverses of each input into an AND gate to test if exactly zero of the inputs are 1. Using an OR gate, I determine if either of these cases are true. The output is 1 if neither of these cases is true and zero otherwise.\
+\
+Question 2:\
+I use two p-type transistors in series to output a 0 if both inputs are 0. I use two n-type transistors in series to output a 0 if both inputs are 1. If neither of these are the case, we know that one of the two inputs must be a one and the other must be a zero. In this case, the wire is left hanging (value of X), and th is X is flipped to a 1 with a pull-up resistor (which doesn't affect a 0 bit if either of the first two cases above are input).\
+I then tested my xor subcircuit in main by feeding it each of the possible combinations of input: (1,1) (1,0) (0,1) and (0,0). This verifies that it works as an XOR gate should.}

@@ -1,0 +1,29 @@
+.pos 0
+
+# immediate addressing!
+	irmovl $0x11223344, %ecx
+	
+# register addressing!
+	rrmovl %ecx, %edx
+
+# indirect addressinng!
+	irmovl target2, %ebx	
+        mrmovl (%ebx), %edi
+	rmmovl %ecx, (%ebx)
+	
+# absolute addressing!
+	rmmovl %ecx, 0x50
+
+# base + displacement
+	rmmovl %ecx, 4(%ebx)	
+
+# goodbye!
+	halt
+
+# a region for the first write
+.pos 0x50
+target1: .long 0xdeadbeef
+
+.align 16
+target2: .long 0xfeedcafe
+

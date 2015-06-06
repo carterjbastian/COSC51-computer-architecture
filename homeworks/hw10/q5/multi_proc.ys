@@ -1,0 +1,62 @@
+.pos 0
+        irmovl 0x0, %esi  # success indicator
+        irmovl 0x0, %edi  # program indicator (for os)
+        irmovl $1, %ebx   # Incrementer
+        irmovl $0, %eax   # Val
+        irmovl $5, %ecx   # End val for looper
+        #enter_os
+        call error
+
+error:
+        irmovl 0xe, %esi
+        halt
+
+# Will really be at logical address 0x100
+.pos 0x200
+looper:
+        addl %ebx, %eax
+        rrmovl %eax, %edx
+        subl %ecx, %edx
+        jne looper
+
+        #enter_os
+        call error
+
+# Will really be at logical address 0x100
+.pos 0x300
+NullPointer:
+        irmovl 0x1, %esi #indicate success
+        irmovl 0x0, %edx
+        mrmovl (%edx), %eax # MEMORY TRAP!
+        #enter_os
+        call error
+
+
+
+# The OS to control the programs
+.pos 0x1000
+        # Run process 1 or two?
+        andl %edi, %edi
+        je run1
+        jmp run2
+
+# Set up the page table to make logical address 0x100 covert to
+# physical address 0x200 and run program 1
+run1:
+        irmovl 0x1, %edi
+        irmovl 0x201, %ebp
+        irmovl 0x2004, %edx
+        rmmovl %ebp, (%edx)
+
+        #exit_os
+        call error
+
+# Set up the page table to make logical address 0x100 convert
+# to physical address 0x300 and run program 2
+run2:
+        irmovl 0x301, %ebp
+        irmovl 0x2004, %edx
+        rmmovl %ebp, (%edx)
+
+        #exit_os
+        call error

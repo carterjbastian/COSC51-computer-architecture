@@ -1,0 +1,9 @@
+.pos 0
+        irmovl $10, %eax
+        irmovl 0x1, %esi    # Success indicator
+
+        #memory trap
+        ret # One-byte temporary filler instruction
+
+        irmovl 0xe, %esi    # Indicate error
+        halt

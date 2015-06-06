@@ -1,0 +1,64 @@
+
+tagmask = 0xfffffc00
+setmask = 0x000003f0
+mode = direct mapped
+64 blocks, 16 bytes in block, 64 sets, 1 line per set
+1: addr 0x22222210; tag 88888; looking in set 33; miss! line 0 empty, adding there
+2: addr 0x33333310; tag ccccc; looking in set 49; miss! line 0 empty, adding there
+3: addr 0x44444410; tag 111111; looking in set 1; miss! line 0 empty, adding there
+4: addr 0x55555510; tag 155555; looking in set 17; miss! line 0 empty, adding there
+5: addr 0x66666610; tag 199999; looking in set 33; miss! line 0 evicted, adding there
+6: addr 0x22222210; tag 88888; looking in set 33; miss! line 0 evicted, adding there
+7: addr 0x33333310; tag ccccc; looking in set 49; found it in line 0; hit!
+8: addr 0x8fe01030; tag 23f804; looking in set 3; miss! line 0 empty, adding there
+9: addr 0x8fe01031; tag 23f804; looking in set 3; found it in line 0; hit!
+10: addr 0xbffff8fc; tag 2ffffe; looking in set 15; miss! line 0 empty, adding there
+2 hits, 8 misses, 10 addresses
+
+tagmask = 0xfffffe00
+setmask = 0x000001f0
+mode = 2-way set associative
+64 blocks, 16 bytes in block, 32 sets, 2 line per set
+1: addr 0x22222210; tag 111111; looking in set 1; miss! line 0 empty, adding there
+2: addr 0x33333310; tag 199999; looking in set 17; miss! line 0 empty, adding there
+3: addr 0x44444410; tag 222222; looking in set 1; miss! line 1 empty, adding there
+4: addr 0x55555510; tag 2aaaaa; looking in set 17; miss! line 1 empty, adding there
+5: addr 0x66666610; tag 333333; looking in set 1; miss! line 0 evicted, adding there
+6: addr 0x22222210; tag 111111; looking in set 1; miss! line 1 evicted, adding there
+7: addr 0x33333310; tag 199999; looking in set 17; found it in line 0; hit!
+8: addr 0x8fe01030; tag 47f008; looking in set 3; miss! line 0 empty, adding there
+9: addr 0x8fe01031; tag 47f008; looking in set 3; found it in line 0; hit!
+10: addr 0xbffff8fc; tag 5ffffc; looking in set 15; miss! line 0 empty, adding there
+2 hits, 8 misses, 10 addresses
+
+tagmask = 0xffffff00
+setmask = 0x000000f0
+mode = 4-way set associative
+64 blocks, 16 bytes in block, 16 sets, 4 line per set
+1: addr 0x22222210; tag 222222; looking in set 1; miss! line 0 empty, adding there
+2: addr 0x33333310; tag 333333; looking in set 1; miss! line 1 empty, adding there
+3: addr 0x44444410; tag 444444; looking in set 1; miss! line 2 empty, adding there
+4: addr 0x55555510; tag 555555; looking in set 1; miss! line 3 empty, adding there
+5: addr 0x66666610; tag 666666; looking in set 1; miss! line 0 evicted, adding there
+6: addr 0x22222210; tag 222222; looking in set 1; miss! line 1 evicted, adding there
+7: addr 0x33333310; tag 333333; looking in set 1; miss! line 2 evicted, adding there
+8: addr 0x8fe01030; tag 8fe010; looking in set 3; miss! line 0 empty, adding there
+9: addr 0x8fe01031; tag 8fe010; looking in set 3; found it in line 0; hit!
+10: addr 0xbffff8fc; tag bffff8; looking in set 15; miss! line 0 empty, adding there
+1 hits, 9 misses, 10 addresses
+
+tagmask = 0xfffffff0
+setmask = 0x00000000
+mode = fully associative
+64 blocks, 16 bytes in block, 1 sets, 64 line per set
+1: addr 0x22222210; tag 2222221; looking in set 0; miss! line 0 empty, adding there
+2: addr 0x33333310; tag 3333331; looking in set 0; miss! line 1 empty, adding there
+3: addr 0x44444410; tag 4444441; looking in set 0; miss! line 2 empty, adding there
+4: addr 0x55555510; tag 5555551; looking in set 0; miss! line 3 empty, adding there
+5: addr 0x66666610; tag 6666661; looking in set 0; miss! line 4 empty, adding there
+6: addr 0x22222210; tag 2222221; looking in set 0; found it in line 0; hit!
+7: addr 0x33333310; tag 3333331; looking in set 0; found it in line 1; hit!
+8: addr 0x8fe01030; tag 8fe0103; looking in set 0; miss! line 5 empty, adding there
+9: addr 0x8fe01031; tag 8fe0103; looking in set 0; found it in line 5; hit!
+10: addr 0xbffff8fc; tag bffff8f; looking in set 0; miss! line 6 empty, adding there
+3 hits, 7 misses, 10 addresses

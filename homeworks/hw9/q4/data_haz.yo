@@ -1,0 +1,8 @@
+  0x000:              | .pos 0
+  0x000: 30f001000000 |         irmovl $1, %eax
+  0x006: 30f302000000 |         irmovl $2, %ebx
+  0x00c: 10           |         nop
+  0x00d: 30f00b000000 |         irmovl $11, %eax
+  0x013: 30f30c000000 |         irmovl $12, %ebx
+  0x019: 6003         |         addl %eax, %ebx
+  0x01b: 00           |         halt #Should end with 23 in %ebx

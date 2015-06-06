@@ -1,0 +1,53 @@
+# Assembly code to test my enter_os and exit_os functions
+# Also ensures that memory operations won't work without privelege
+# Mode being zero.
+.pos 0
+        irmovl 0x0, %esi
+        # Should start with privelage
+        irmovl DDR, %ecx # %ecx<-0x304
+        mrmovl (%ecx), %ecx # %ecx<-0x00ffe0x
+        irmovl $61, %ebx
+        rmmovl %ebx, (%ecx)
+
+        #exit_os
+        call error # A temporary 5-byte instruction to be replaced by hand
+
+        irmovl 0xe, %esi # Should never get processed
+        halt
+
+done: 
+        irmovl 0x1, %esi
+        halt # Successful finish
+
+
+error:
+        irmovl 0xe, %esi
+        halt  # Unsuccessful finish
+
+.pos 0x100
+        # Should not print to os - not priveleged
+        irmovl $62, %ebx
+        rmmovl %ebx, (%ecx)
+
+        #enter_os
+        call error    # A Temporary 5-byte filler funtion to be replaced
+        irmovl 0xe, %esi
+
+
+
+.pos 0x300
+DSR:
+        .long 0x00fffe08
+
+DDR:
+        .long 0x00ffe0c
+
+
+.pos 0x1000
+        # Should print to IO - priveled enabled
+        irmovl $63, %ebx
+        rmmovl %ebx, (%ecx)
+
+        jmp done
+
+        irmovl 0xe, %esi

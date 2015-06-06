@@ -1,0 +1,6 @@
+# test1.ys – basics
+# Does something
+.pos 0
+        irmovl $0xdeadbeef, %eax
+        irmovl $0xcafefeed, %ebx
+        halt

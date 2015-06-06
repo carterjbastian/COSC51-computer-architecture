@@ -1,0 +1,22 @@
+# Test4 - The Stack
+# Testing pushing and popping (And nop)
+.pos 0
+        irmovl stack, %esp
+        irmovl $0xfeedcafe, %ecx
+        irmovl $0xdeadbeef, %eax
+
+        pushl %ecx
+        pushl %eax
+
+        nop
+        nop
+
+        popl %ecx # %ecx <- 0xdeadbeef
+        popl %eax # %eax <- 0xfeedcafe
+
+        halt
+
+
+.pos 0x10c
+stack:
+        .long 0xffffffff

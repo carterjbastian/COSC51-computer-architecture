@@ -1,0 +1,58 @@
+# Assembly code to test the addm instruction
+.pos 0
+        # Set up success indicators
+        irmovl 0x0, %esi    # test_1
+        irmovl 0x0, %edi    # test_2
+
+        irmovl mem1, %ebx   # Store memory address
+        irmovl stack, %esp  # Stack
+
+        # Test 1
+        irmovl $4, %ecx
+        pushl %ebx       # The addm instruction may overwrite value
+        # addm (%ebx), %ecx
+        irmovl $1, %ecx  # Temporary to align .yo file
+        popl %ebx
+
+        irmovl $5, %edx
+        subl %edx, %ecx
+
+        je test_1
+
+        # If test fails, indicate error and halt
+        irmovl 0xe, %esi
+        halt
+
+test_1:
+        irmovl 0x1, %esi    # test_1 passed
+
+        # test_2
+        irmovl $4, %edx
+        # addm 4(%ebx), %edx
+        irmovl $4, %edx     # Temporary to align .yo file
+        je test_2
+
+        # If test_2 fails, indicate error and halt
+        irmovl 0xe, %edi
+        halt
+
+test_2:
+        irmovl 0x1, %edi    # test_2 passed
+        halt
+
+
+
+
+.pos 0x200
+stack:
+        .long 0xffffffff
+
+
+
+.pos 0x300
+mem1:
+        .long 0x1
+
+mem2:
+        .long 0xfffffffc
+

@@ -1,0 +1,6 @@
+                      | # test1.ys – basics
+                      | # Does something
+  0x000:              | .pos 0
+  0x000: 30f0efbeadde |         irmovl $0xdeadbeef, %eax
+  0x006: 30f3edfefeca |         irmovl $0xcafefeed, %ebx
+  0x00c: 00           |         halt

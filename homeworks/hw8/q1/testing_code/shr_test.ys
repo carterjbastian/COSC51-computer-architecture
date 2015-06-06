@@ -1,0 +1,31 @@
+# Assembly code to demonstrate the newly implemented
+# shr instruction.
+.pos 0
+        irmovl 0x0, %esi      # Success indicator
+        
+        # Test 1
+        irmovl 0xffffffff, %ecx
+        irmovl 0x7fffffff, %ebx  # correct results
+        # shr %ecx, %eax
+        andl %esi, %esi         # Temporary to make .yo line up
+        subl %ebx, %eax
+        je test_1
+
+        irmovl 0xe, %esi        # Halt with error if it fails
+        halt
+
+test_1:
+        irmovl 0x1, %esi      # Indicate success for first shift
+        irmovl 0x0, %edi      # Success indicator for second shift
+
+        irmovl 0x1, %ecx
+        andl %esi, %esi       # Temporary to make .yo line up
+        # shr %ecx, %eax
+        je test_2
+
+        irmovl 0xe, %edi      # Halt with error if shift fails
+        halt
+
+test_2:
+        irmovl 0x1, %edi      # Indicate success for second shift
+        halt

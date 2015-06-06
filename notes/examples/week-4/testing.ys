@@ -1,0 +1,56 @@
+# Execution begins at address 0
+.pos 0
+init:
+        irmovl stack, %esp
+        irmovl stack, %ebp
+        call Main
+        halt
+
+# Array of 4 elements
+.align 4
+array:
+        .long 0xd
+        .long 0xc0
+        .long 0xb00
+        .long 0xa000
+
+Main:
+        pushl %ebp
+        rrmovl %esp, %ebp
+        irmovl $4, %eax
+        pushl %eax
+        irmovl array, %edx
+        pushl %edx          # Push array
+        call Sum
+        rrmovl %ebp, %esp
+        popl %ebp
+        ret
+
+# int Sum(int *Start, int Count)
+Sum:
+        pushl %ebp
+        rrmovl %esp, %ebp
+        mrmovl 8(%ebp), %ecx  # ecx = start
+        mrmovl 12(%ebp), %edx # edx = count
+        xorl %eax, %eax       # sum = 0
+        andl %edx, %edx       # set condition codes
+        je End
+
+Loop:
+        mrmovl (%ecx), %esi   # get *Start
+        addl %esi, %eax   
+        irmovl $4, %ebx
+        addl %ebx, %ecx
+        irmovl $-1, %ebx
+        addl %ebx, %edx
+        jne Loop
+End:
+        rmmovl %ebp, %esp
+        popl %ebp
+        ret
+
+
+# Stack starts here and moves to lower addresses
+.pos 0x100
+stack:
+        .long 0xFFFFFFFF

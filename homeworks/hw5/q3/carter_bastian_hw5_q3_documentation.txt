@@ -1,0 +1,14 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\b\fs24 \cf0 HW5 Q3 Testing and Documentation
+\b0 \
+\
+I tested this question on a variety of random test cases (including edge cases like all 0s and all 1s, and "normal" randomly generated 32-bit values). For the sake of simplicity, I only included two test cases in the file: the first demonstrates the code's ability to shift with wrapping, and the second demonstrates its ability to shift without wrapping. I also assigned dummy values to all of the registers before shifting so that I could ensure that the original state remains at the end of the shifting. I use callee-saving to save the initial state.\
+\
+In terms of strategy, doubling the value of a bit-string shifts it to the left by one bit. If the original value is negative, its most significant bit is a 1, and thus we'll need to "wrap around". This can be done by incrementing the shifted result by a value of 1.\
+\
+Note that I included a modified version of this solution in carter_bastian_hw5_q3-looper.ys. The majority of the code is the same and the two functions do the same thing. The only difference is that the looper-version is more extensible as it uses a loop to shift the bit-string a specified number of times. This makes the code more complex, but is probably better practice as it would allow the user to change the number of places to shift the bit-string.}

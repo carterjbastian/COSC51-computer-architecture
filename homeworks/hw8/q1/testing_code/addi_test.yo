@@ -1,0 +1,33 @@
+                      | # Assembly code to test the addi instruction
+  0x000:              | .pos 0
+                      |         # Set up error indicators
+  0x000: 30f600000000 |         irmovl 0x0, %esi      # test_1 indicator
+  0x006: 30f700000000 |         irmovl 0x0, %edi      # test_2 indicator
+                      | 
+  0x00c: 30f104000000 |         irmovl $4, %ecx
+                      |         #addi $1, %ecx
+  0x012: d0f101000000 |         addi $1, %ecx         # Input by hand
+                      |         # Test 1
+  0x018: 30f205000000 |         irmovl $5, %edx
+  0x01e: 6121         |         subl %edx, %ecx
+  0x020: 732c000000   |         je test_1
+                      | 
+                      |         # If test fails, indicate error and halt
+  0x025: 30f60e000000 |         irmovl 0xe, %esi
+  0x02b: 00           |         halt
+                      | 
+  0x02c:              | test_1:
+  0x02c: 30f601000000 |         irmovl 0x1, %esi    # test_1 passed
+                      | 
+  0x032: 30f204000000 |         irmovl $4, %edx
+                      |         #addi $-4, %edx
+  0x038: d0f2fcffffff |         addi $-4, %edx    # Input by hand
+  0x03e: 734a000000   |         je test_2
+                      |       
+                      |         # If test fails indicate error and halt
+  0x043: 30f70e000000 |         irmovl 0xe, %edi
+  0x049: 00           |         halt
+                      | 
+  0x04a:              | test_2:
+  0x04a: 30f701000000 |         irmovl 0x1, %edi    # Indicate success
+  0x050: 00           |         halt

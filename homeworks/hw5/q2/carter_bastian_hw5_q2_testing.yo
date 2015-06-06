@@ -1,0 +1,31 @@
+                      | # Question 1
+  0x100:              | .pos 0x100
+  0x100: 30f3fcffffff |         irmovl $0xfffffffc, %ebx
+  0x106: 406300080000 |         rmmovl %esi, 2048(%ebx)
+  0x10c: 00           |         halt
+                      | 
+                      | # Question 2
+  0x200:              | .pos 0x200
+  0x200: a06f         |         pushl %esi
+  0x202: 8008020000   |         call $0x208
+  0x207: 00           |         halt
+  0x208: 30f30a000000 |         irmovl $0x0000000a, %ebx
+  0x20e: 90           |         ret
+                      | 
+                      | # Question 3
+  0x300:              | .pos 0x300
+  0x300: 505407000000 |         mrmovl 7(%esp), %ebp
+  0x306: 10           |         nop
+  0x307: b01f         |         popl %ecx
+                      | 
+                      | # Question 4
+  0x400:              | .pos 0x400
+  0x400: 6113         |         subl %ecx, %ebx
+  0x402: 7300030000   |         je $0x300
+  0x407: 00           |         halt
+                      | 
+                      | # Question 5
+  0x500:              | .pos 0x500
+  0x500: 6362         |         xorl %esi, %edx
+                      |         # Below is what the command SHOULD be (but in the problem it's invalid)
+  0x502: a00f         |         pushl %eax

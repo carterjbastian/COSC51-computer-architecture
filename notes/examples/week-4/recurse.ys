@@ -1,0 +1,53 @@
+# sws, cs51, 2015
+
+.pos 0
+	# set up stack
+	irmovl stack, %esp
+
+
+# main
+	
+	irmovl 2, %eax
+	call FUN
+	halt
+
+	# subroutine: %ebx <- FUN(%eax)
+	# promises:  only %ebx (and the esp) will change
+FUN:
+	# if x = 0...
+	rrmovl %eax, %ebx
+	addl %ebx,%ebx
+	jne recurse   # nz!
+	
+	#...then do base case
+	irmovl 0, %ebx
+	ret
+
+	# x > 0
+recurse:
+	# save x
+	pushl %eax
+	
+	# get F(x-1)
+	irmovl $-1,%ebx
+	addl %ebx,%eax
+	call FUN
+	
+	# get F(x)
+	popl %eax
+	addl %eax, %ebx
+	ret
+
+
+
+
+
+
+
+
+
+.pos 0x10C
+stack: 
+        .long 0xFFFFFFFF # the top of the empty stack
+
+

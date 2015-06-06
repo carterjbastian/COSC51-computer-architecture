@@ -1,0 +1,14 @@
+
+version = 1
+6298742 hits, 41203 misses, 6339945 addresses
+Version1 Hit-rate: 0.993501
+Version1  Miss-rate: 0.006499
+Total time for version 1: 8358892
+
+version = 2
+6232616 hits, 107346 misses, 6339962 addresses
+Version2 hit-rate: 0.983068
+Version2 miss-rate: 0.016932
+Total time for version 2: 11599916
+
+Version2 was 1.387734 times slower than Version1

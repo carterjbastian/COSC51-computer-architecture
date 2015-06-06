@@ -1,0 +1,23 @@
+                      | # sws, cs51, april 2015
+                      | 
+  0x000:              | .pos 0
+                      | 
+  0x000: 30f030000000 | start:		irmovl pKBSR, %eax # read KBSR until it's 1
+  0x006: 500000000000 | 		mrmovl (%eax), %eax
+  0x00c: 503000000000 | KBNotReady: 	mrmovl (%eax), %ebx
+  0x012: 6033         | 		addl %ebx,%ebx
+  0x014: 730c000000   | 		je KBNotReady # jmps if zero
+                      | 	
+                      | 		# got a character---get it into %ecx
+  0x019: 30f034000000 | 		irmovl pKBDR, %eax
+  0x01f: 500000000000 | 		mrmovl (%eax), %eax	
+  0x025: 501000000000 | 		mrmovl (%eax), %ecx
+                      | 	
+                      | 		# go back
+  0x02b: 7000000000   | 		jmp start
+                      | 	
+                      | # these named locations store the addresses	of the registers
+  0x030: 00feff00     | pKBSR: .long 0x00FFFE00
+  0x034: 04feff00     | pKBDR: .long 0x00FFFE04
+                      | 
+                      | 

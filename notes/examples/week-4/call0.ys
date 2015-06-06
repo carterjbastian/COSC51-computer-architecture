@@ -1,0 +1,38 @@
+# sws, cs51, 2015
+
+.pos 0
+	# set up stack
+	irmovl stack, %esp
+        mrmovl (%esp), %edi
+	
+	irmovl $0xdeadcafe, %ebx
+
+	irmovl $0xFFFFFFFD, %eax
+	call NEGATE
+	halt
+
+
+
+
+
+	# subroutine: %eax <- - %eax
+NEGATE:
+	irmovl $0xFFFFFFFF,%ebx
+	xorl %ebx, %eax
+	irmovl $0x01, %ebx
+	addl %ebx, %eax
+	ret
+
+
+
+
+
+
+
+
+
+.pos 0x10C
+stack: 
+        .long 0xFFFFFFFF # the top of the empty stack
+
+

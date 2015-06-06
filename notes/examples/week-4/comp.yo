@@ -1,0 +1,19 @@
+                      | # sws, cs51, 2015
+                      | 
+  0x000:              | .pos 0
+                      | 	
+  0x000: 30f305000000 | 	irmovl 5, %ebx
+  0x006: 30f1ffffffff | 	irmovl -1, %ecx
+                      | 
+  0x00c: 6131         | 	subl %ebx, %ecx
+  0x00e: 721d000000   | 	jl lessthan
+  0x013: 7622000000   | 	jg greaterthan
+                      | 	
+  0x018:              | equal:
+  0x018: 7018000000   | 	jmp equal
+                      | 	
+  0x01d:              | lessthan:
+  0x01d: 701d000000   | 	jmp lessthan
+                      | 	
+  0x022:              | greaterthan:
+  0x022: 7022000000   | 	jmp greaterthan

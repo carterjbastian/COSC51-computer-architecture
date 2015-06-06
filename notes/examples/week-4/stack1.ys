@@ -1,0 +1,45 @@
+# sws, cs51, 2015
+
+.pos 0
+
+	# set up stack
+	irmovl stack, %esp
+
+	# set up initial values
+	irmovl 0xAAAAAAAA, %eax
+	irmovl 0xBBBBBBBB, %ebx
+	irmovl 0xCCCCCCCC, %ecx
+	
+	
+	pushl %eax
+	# equiv to 
+	#   subl $4, %esp   (if we had immediates!)
+	#   movl %eax, (%esp)
+	
+	pushl %ebx
+	pushl %ecx	
+
+
+	# now, maybe we do something else that trashes the registers
+	irmovl 0x00, %eax
+	irmovl 0x00, %ebx
+	irmovl 0x00, %ecx
+	
+	
+	# now... restore them!
+	popl %ecx
+	# equiv to 
+	#   movl (%esp), %ecx
+	#   addl $4, %esp   (if we had immediates!) 
+
+	popl %ebx
+	popl %eax
+
+	halt
+
+
+
+
+.pos 0x10C
+stack: 
+	.long 0xFFFFFFFF # the top of the empty stack

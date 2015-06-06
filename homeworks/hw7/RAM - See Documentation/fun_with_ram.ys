@@ -1,0 +1,41 @@
+# This is a fun script that does things
+.pos 0
+        # Get the DDR ready for writing to TTY
+        irmovl DDR, %ecx
+        mrmovl (%ecx), %ecx # %ecx <- mem addr of DDR
+
+        irmovl 0x400, %edx  # %edx has the counter
+        irmovl $4, %esi     # %esi has the increment
+        irmovl 0x800, %ebx  # %ebx has the stop value
+
+loop:
+        # Check if we need to jump out
+        rrmovl %edx, %edi   # %edi <- program counter
+        subl %ebx, %edi     # compare prog counter to stop value
+        jge done            # stop looping if done
+
+        # Get data from memory
+        mrmovl (%edx), %eax # %eax has the ASCII value of impt data
+
+        # Write data to TTY
+        rmmovl %eax, (%ecx)
+
+        # Increment counter
+        addl %esi, %edx
+        jmp loop
+
+done:
+        halt
+
+.pos 0x300
+KBSR:
+        .long 0x00fffe00
+
+KBDR:
+        .long 0x00fffe04
+
+DSR:
+        .long 0x00fffe08
+
+DDR:
+        .long 0x00fffe0c

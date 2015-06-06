@@ -1,0 +1,58 @@
+# Test3: operations and conditional moving
+.pos 0
+        # some operands for testing
+        irmovl mem, %edi
+        irmovl $1, %ecx
+        irmovl $15, %edx
+        rrmovl %edx, %ebx
+
+        irmovl $-1, %esi     #Failure indicator
+        irmovl $1, %ebp      # Success indicator
+
+        # Add testing
+        addl %ecx, %ebx
+        rmmovl %ebx, 4(%edi) # => 16 = 0x10
+
+        # Subtractions and conditional move testing
+        rrmovl %edx, %ebx
+        subl %ecx, %ebx     # => 14 = 0xe
+        rmmovl %ebx, 8(%edi)
+
+        # shouldn't move
+        irmovl $1, %eax
+        cmovle %esi, %eax
+        cmovl %esi, %eax
+        cmove %esi, %eax
+        rmmovl %eax, -4(%edi)
+
+        # should work
+        irmovl $-1, %eax
+        cmovne %ebp, %eax
+        rmmovl %eax, -8(%edi)
+
+        irmovl $-1, %eax
+        cmovg %ebp, %eax
+        rmmovl %eax, -12(%edi)
+
+        irmovl $-1, %eax
+        cmovge %ebp, %eax
+        rmmovl %eax, -16(%edi)
+
+
+        # Test andl and xorl
+        rrmovl %edx, %ebx
+        andl %ecx, %ebx
+        rmmovl %ebx, 12(%edi) # => 1
+
+        xorl %edx, %ebx   # => e
+        rmmovl %ebx, 16(%edi)
+
+        halt
+        
+
+
+.pos 300
+mem:
+        .long 0xffffffff
+
+

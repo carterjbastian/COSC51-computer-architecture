@@ -1,0 +1,20 @@
+# sws, cs51, 2015
+
+.pos 0
+	
+	irmovl 5, %ebx
+	irmovl -1, %ecx
+
+	subl %ebx, %ecx
+	jl lessthan
+	jg greaterthan
+	
+equal:
+	jmp equal
+	
+lessthan:
+	jmp lessthan
+	
+greaterthan:
+	jmp greaterthan
+	

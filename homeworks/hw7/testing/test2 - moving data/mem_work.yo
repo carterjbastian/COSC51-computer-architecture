@@ -1,0 +1,16 @@
+                      | # Debugging memory - register moving
+  0x000:              | .pos 0
+  0x000: 30f00c010000 |         irmovl mem, %eax
+  0x006: 30f303000000 |         irmovl $3, %ebx
+                      | 
+  0x00c: 403004000000 |         rmmovl %ebx, 4(%eax)
+  0x012: 501000000000 |         mrmovl (%eax), %ecx
+  0x018: 502004000000 |         mrmovl 4(%eax), %edx
+                      | 
+  0x01e: 00           |         halt
+                      | 
+                      | 
+                      | 
+  0x10c:              | .pos 0x10c
+  0x10c:              | mem:
+  0x10c: ffffffff     |         .long 0xffffffff

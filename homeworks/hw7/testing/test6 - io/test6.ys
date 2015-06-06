@@ -1,0 +1,44 @@
+# Test 6.1 - IO writing to the TTY from memory
+# tests that interactions with TTY work
+.pos 0
+        # Nothing in the register yet...
+        irmovl $1, %esi #Success indicator (1=success)
+
+        # KBSR should be 0
+        irmovl KBSR, %ebx
+        mrmovl (%ebx), %ecx
+        mrmovl (%ecx), %ebx
+        addl %ebx, %ebx
+        jne error
+  
+        irmovl DDR, %ebx
+        mrmovl (%ebx), %ecx
+  
+        # Writing to the DDR register should write to the TTY
+        irmovl 0x61, %eax
+        rmmovl %eax, (%ecx)
+        irmovl 0x62, %eax
+        rmmovl %eax, (%ecx)
+        irmovl 0x63, %eax
+        rmmovl %eax, (%ecx)
+        # "abc" should now be in the tty
+
+        halt
+
+
+error:
+        irmovl $0xe, %esi
+        halt
+
+.pos 0x200
+KBSR:
+        .long 0x00fffe00
+
+KBDR:
+        .long 0x00fffe04
+
+DSR:
+        .long 0x00fffe08
+
+DDR:
+        .long 0x00fffe0c

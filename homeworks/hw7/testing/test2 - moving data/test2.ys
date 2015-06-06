@@ -1,0 +1,23 @@
+# Test2: Moving Data
+# Tests irmovl, rmmovl, mrmovl, and rrmovl
+.pos 0
+        # Test immediate-to-reg moves
+        irmovl $3, %eax
+        irmovl $-1, %ecx
+        irmovl mem_location, %ebx
+
+        # Test Register to memory moves
+        rmmovl %eax, 4(%ebx)
+
+        # Test memory to register moves
+        mrmovl (%ebx), %edx
+        mrmovl 4(%ebx), %edi
+
+        # Test reg-reg moves
+        rrmovl %edi, %esi
+
+        halt
+
+.pos 0x10c
+mem_location:
+        .long 0xffffffff

@@ -1,0 +1,6 @@
+INSTRUCTIONS:
+1. Load "fun_with_ram.hex" into my first 1-KB module of RAM (0x0 - 0x3ff)
+2. Load "impt_data.hex" into my second 1-KB module of RAM (0x400 - 0x7ff)
+3. Turn the tick frequency in Logisim up to its maximum value (4.1kHz)
+5. Enable ticks and watch the TTY
+6. Watch for a sufficient amount of time to read the important message.

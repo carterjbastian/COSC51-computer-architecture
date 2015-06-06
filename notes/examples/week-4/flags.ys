@@ -1,0 +1,32 @@
+# sws, cs51, 2015
+
+.pos 0
+
+# make sure they're all off
+	irmovl $2, %eax
+	irmovl $1, %ebx
+	addl %ebx, %eax
+
+# ZF
+	irmovl $2, %eax
+	irmovl $1, %ebx
+	xorl %eax, %eax
+
+# SF
+	irmovl $2, %eax
+	irmovl $1, %ebx
+	subl %eax, %ebx
+
+
+	
+# over the top	
+	irmovl $0x7FFFFFFF, %eax
+	irmovl $0x01, %ebx
+	addl %eax, %ebx	
+
+# below the bottom
+	irmovl  $0x80000000, %ebx
+	irmovl $0x01, %eax
+	subl %eax, %ebx	
+
+	halt

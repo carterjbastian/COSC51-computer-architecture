@@ -1,0 +1,30 @@
+  0x000:              | .pos 0
+  0x000: 30f001000000 |         irmovl $1, %eax
+  0x006: 10           |         nop #avoiding data hazards
+  0x007: 10           |         nop
+  0x008: 10           |         nop
+  0x009: 6003         |         addl %eax , %ebx
+  0x00b: 30f105000000 |         irmovl $5, %ecx
+  0x011: 30f200010000 |         irmovl $0x100, %edx
+  0x017: 10           |         nop # Avoid data hazard
+  0x018: 6103         |         subl %eax, %ebx
+  0x01a: 742e000000   |         jne target
+                      | 
+  0x01f:              | done:
+  0x01f: 10           |         nop
+  0x020: 10           |         nop
+  0x021: 10           |         nop
+  0x022: 10           |         nop
+  0x023: 401204000000 |         rmmovl %ecx, 4(%edx)
+  0x029: 00           |         halt
+  0x02a: 10           |         nop
+  0x02b: 10           |         nop
+  0x02c: 10           |         nop
+  0x02d: 10           |         nop
+                      | 
+  0x02e:              | target:
+  0x02e: 00           |         halt
+  0x02f: 10           |         nop
+  0x030: 10           |         nop
+  0x031: 10           |         nop
+  0x032: 701f000000   |         jmp done:   

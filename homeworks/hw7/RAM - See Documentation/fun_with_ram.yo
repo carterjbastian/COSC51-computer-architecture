@@ -1,0 +1,41 @@
+                      | # This is a fun script that does things
+  0x000:              | .pos 0
+                      |         # Get the DDR ready for writing to TTY
+  0x000: 30f10c030000 |         irmovl DDR, %ecx
+  0x006: 501100000000 |         mrmovl (%ecx), %ecx # %ecx <- mem addr of DDR
+                      | 
+  0x00c: 30f200040000 |         irmovl 0x400, %edx  # %edx has the counter
+  0x012: 30f604000000 |         irmovl $4, %esi     # %esi has the increment
+  0x018: 30f300080000 |         irmovl 0x800, %ebx  # %ebx has the stop value
+                      | 
+  0x01e:              | loop:
+                      |         # Check if we need to jump out
+  0x01e: 2027         |         rrmovl %edx, %edi   # %edi <- program counter
+  0x020: 6137         |         subl %ebx, %edi     # compare prog counter to stop value
+  0x022: 753a000000   |         jge done            # stop looping if done
+                      | 
+                      |         # Get data from memory
+  0x027: 500200000000 |         mrmovl (%edx), %eax # %eax has the ASCII value of impt data
+                      | 
+                      |         # Write data to TTY
+  0x02d: 400100000000 |         rmmovl %eax, (%ecx)
+                      | 
+                      |         # Increment counter
+  0x033: 6062         |         addl %esi, %edx
+  0x035: 701e000000   |         jmp loop
+                      | 
+  0x03a:              | done:
+  0x03a: 00           |         halt
+                      | 
+  0x300:              | .pos 0x300
+  0x300:              | KBSR:
+  0x300: 00feff00     |         .long 0x00fffe00
+                      | 
+  0x304:              | KBDR:
+  0x304: 04feff00     |         .long 0x00fffe04
+                      | 
+  0x308:              | DSR:
+  0x308: 08feff00     |         .long 0x00fffe08
+                      | 
+  0x30c:              | DDR:
+  0x30c: 0cfeff00     |         .long 0x00fffe0c

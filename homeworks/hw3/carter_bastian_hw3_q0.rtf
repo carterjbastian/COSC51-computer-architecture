@@ -1,0 +1,18 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 HW3 Q0\
+What happens when "set" is asserted?\
+When set is asserted, the D-flip/flop stores a 1 (Q=1). This stays true for as long as set stays asserted (unless you also assert "reset").\
+\
+What happens when "reset" is asserted?\
+When reset is asserted, the D-flip/flop stores a 0 (Q=0). This stays true for as long as reset stays asserted (even if you also assert set).\
+\
+What happens when the FF is configured on High-Level?\
+When the FF is configured on high level, changing the data while the clock is low triggers no change in the output. However, while the clock is high, any changes to the data are reflected in the output (Q changes to the value of data for as long as the clock is high).\
+\
+What happens when the FF is configured on a Rising edge?\
+The the FF is configured on a rising edge, changing the data while the clock is low triggers no change. However, when changing the clock from low to high causes the output to change to the value of the data (at the moment that the clock is switched from low to high). However, after the clock becomes high, any subsequent changes to the data are not reflected in the output \'96 Q continues to store the value of the data at the time that the clock was raised from low to high.}

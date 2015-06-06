@@ -1,0 +1,34 @@
+# Assembly code to test the addi instruction
+.pos 0
+        # Set up error indicators
+        irmovl 0x0, %esi      # test_1 indicator
+        irmovl 0x0, %edi      # test_2 indicator
+
+        irmovl $4, %ecx
+        #addi $1, %ecx
+        irmovl $1, %ecx     # Temporary to make .yo line up        
+
+        # Test 1
+        irmovl $5, %edx
+        subl %edx, %ecx
+        je test_1
+
+        # If test fails, indicate error and halt
+        irmovl 0xe, %esi
+        halt
+
+test_1:
+        irmovl 0x1, %esi    # test_1 passed
+
+        irmovl $4, %edx
+        #addi $-4, %edx
+        irmovl $-4, %edx    # Temporary to make .yo line up
+        je test_2
+      
+        # If test fails indicate error and halt
+        irmovl 0xe, %edi
+        halt
+
+test_2:
+        irmovl 0x1, %edi    # Indicate success
+        halt

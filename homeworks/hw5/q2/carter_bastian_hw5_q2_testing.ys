@@ -1,0 +1,31 @@
+# Question 1
+.pos 0x100
+        irmovl $0xfffffffc, %ebx
+        rmmovl %esi, 2048(%ebx)
+        halt
+
+# Question 2
+.pos 0x200
+        pushl %esi
+        call $0x208
+        halt
+        irmovl $0x0000000a, %ebx
+        ret
+
+# Question 3
+.pos 0x300
+        mrmovl 7(%esp), %ebp
+        nop
+        popl %ecx
+
+# Question 4
+.pos 0x400
+        subl %ecx, %ebx
+        je $0x300
+        halt
+
+# Question 5
+.pos 0x500
+        xorl %esi, %edx
+        # Below is what the command SHOULD be (but in the problem it's invalid)
+        pushl %eax

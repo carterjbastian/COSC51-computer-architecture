@@ -1,0 +1,270 @@
+                      | # CS51 HW5 Q4, Carter Bastian
+                      | 
+                      | # Execution starts at address 0
+  0x000:              | .pos 0
+                      | 
+  0x000:              | init:
+  0x000: 30f400050000 |         irmovl stack, %esp    # set up stack pointer
+  0x006: 8018000000   |         call main             # Execute the main program
+                      | 
+                      |         # put the output in edx (for testing)
+  0x00b: 30f762020000 |         irmovl output, %edi
+  0x011: 502700000000 |         mrmovl (%edi), %edx
+                      |  
+  0x017: 00           |         halt                  # Terminate the program
+                      | 
+  0x018:              | main:
+  0x018: 30f066020000 |         irmovl end_pointer, %eax
+  0x01e: 404000000000 |         rmmovl %esp, (%eax) # Save the end pointer
+                      | 
+  0x024: 30f260020000 |         irmovl input, %edx
+  0x02a: 500200000000 |         mrmovl (%edx), %eax   # Month BCD in %eax
+  0x030: 501201000000 |         mrmovl 1(%edx), %ecx  # Day BCD in %ecx
+                      | 
+                      |         # Fix the BCDs so they only have their last two bits
+  0x036: 30f3ff000000 |         irmovl $0x000000ff, %ebx
+  0x03c: 6230         |         andl %ebx, %eax
+  0x03e: 6231         |         andl %ebx, %ecx
+                      | 
+                      |         # Convert the month into a hex value from a BCD
+  0x040: a01f         |         pushl %ecx
+  0x042: 800b010000   |         call convert_bcd
+  0x047: 2001         |         rrmovl %eax, %ecx
+  0x049: b00f         |         popl %eax
+  0x04b: a01f         |         pushl %ecx # save hex month value
+  0x04d: 800b010000   |         call convert_bcd
+  0x052: b01f         |         popl %ecx # retrieve hex month value
+                      | 
+                      |         # Now %eax contains the hex value of the day
+                      |         # and %ecx containt the hex value of the month
+                      | 
+                      |         # Go month-by-month to test for each case
+                      |         # month = 0 -> false output
+  0x054: 30f700000000 |         irmovl $0, %edi
+  0x05a: 6117         |         subl %ecx, %edi
+  0x05c: 7319020000   |         je false_out
+                      | 
+                      |         # month = 1 -> Jan -> 31-day-month
+  0x061: 30f701000000 |         irmovl $1, %edi
+  0x067: 6117         |         subl %ecx, %edi
+  0x069: 73a9010000   |         je parse_31_day_month 
+                      | 
+                      |         # month = 2 -> feb -> 28-day-month
+  0x06e: 30f702000000 |         irmovl $2, %edi
+  0x074: 6117         |         subl %ecx, %edi
+  0x076: 73df010000   |         je parse_28_day_month
+                      | 
+                      |         # month = 3 -> March -> 31-day-month
+  0x07b: 30f703000000 |         irmovl $3, %edi
+  0x081: 6117         |         subl %ecx, %edi
+  0x083: 73a9010000   |         je parse_31_day_month
+                      |  
+                      |         # month = 4 -> April -> 30-day-month
+  0x088: 30f704000000 |         irmovl $4, %edi
+  0x08e: 6117         |         subl %ecx, %edi
+  0x090: 73c4010000   |         je parse_30_day_month
+                      | 
+                      |         # month = 5 -> May -> 31-day-month 
+  0x095: 30f705000000 |         irmovl $5, %edi
+  0x09b: 6117         |         subl %ecx, %edi
+  0x09d: 73a9010000   |         je parse_31_day_month
+                      | 
+                      |         # month = 6 -> June -> 30-day-month
+  0x0a2: 30f706000000 |         irmovl $6, %edi
+  0x0a8: 6117         |         subl %ecx, %edi
+  0x0aa: 73c4010000   |         je parse_30_day_month
+                      | 
+                      |         # month = 7 -> July -> 31-day-month
+  0x0af: 30f707000000 |         irmovl $7, %edi
+  0x0b5: 6117         |         subl %ecx, %edi
+  0x0b7: 73a9010000   |         je parse_31_day_month
+                      | 
+                      |         # month = 8 -> August -> 31-day-month
+  0x0bc: 30f708000000 |         irmovl $8, %edi
+  0x0c2: 6117         |         subl %ecx, %edi
+  0x0c4: 73a9010000   |         je parse_31_day_month
+                      | 
+                      |         # month = 9 -> September -> 30-day-month
+  0x0c9: 30f709000000 |         irmovl $9, %edi
+  0x0cf: 6117         |         subl %ecx, %edi
+  0x0d1: 73c4010000   |         je parse_30_day_month
+                      | 
+                      |         # month = 10 -> October -> 31-day-month
+  0x0d6: 30f70a000000 |         irmovl $0xa, %edi
+  0x0dc: 6117         |         subl %ecx, %edi
+  0x0de: 73a9010000   |         je parse_31_day_month
+                      | 
+                      |         # month = 11 -> November -> 30-day-month
+  0x0e3: 30f70b000000 |         irmovl $0xb, %edi
+  0x0e9: 6117         |         subl %ecx, %edi
+  0x0eb: 73c4010000   |         je parse_30_day_month
+                      | 
+                      |         # month = 12 -> December -> 31-day-month
+  0x0f0: 30f70c000000 |         irmovl $0xc, %edi
+  0x0f6: 6117         |         subl %ecx, %edi
+  0x0f8: 73a9010000   |         je parse_31_day_month
+                      | 
+                      |         # month >= 13 -> false_out
+  0x0fd: 30f70d000000 |         irmovl $0xd, %edi
+  0x103: 6117         |         subl %ecx, %edi
+  0x105: 7119020000   |         jle false_out
+                      | 
+                      |        
+  0x10a: 90           |         ret
+                      | 
+                      | 
+                      | 
+  0x10b:              | convert_bcd:  # Converts a 1-byte BCD in %eax to a hex value
+                      | 
+                      |         # figure out the 10's digit and save it in %edx
+  0x10b: 30f1f0000000 |         irmovl $0xf0, %ecx
+  0x111: 6201         |         andl %eax, %ecx # Register %ecx contains the 10's value isolated
+                      |         
+  0x113: 30f7a0000000 |         irmovl $0xa0, %edi    # For comparison
+  0x119: 6117         |         subl %ecx, %edi       # Is our 10's digit less than 10?
+  0x11b: 7138020000   |         jle error_out         # If not, error
+                      | 
+  0x120: 30f740000000 |         irmovl $0x40, %edi    
+  0x126: 6117         |         subl %ecx, %edi       # Is our 10's digit less than 4?
+  0x128: 7119020000   |         jle false_out         # If not, false output
+                      | 
+                      |         # Check each of the remaining cases for the 10's digit
+  0x12d: 30f730000000 |         irmovl $0x30, %edi
+  0x133: 30f303000000 |         irmovl $0x3, %ebx
+  0x139: 6117         |         subl %ecx, %edi
+  0x13b: 2332         |         cmove %ebx, %edx
+                      | 
+  0x13d: 30f720000000 |         irmovl $0x20, %edi
+  0x143: 30f302000000 |         irmovl $0x2, %ebx
+  0x149: 6117         |         subl %ecx, %edi
+  0x14b: 2332         |         cmove %ebx, %edx
+                      |         
+  0x14d: 30f710000000 |         irmovl $0x10, %edi
+  0x153: 30f301000000 |         irmovl $0x1, %ebx
+  0x159: 6117         |         subl %ecx, %edi
+  0x15b: 2332         |         cmove %ebx, %edx
+                      | 
+  0x15d: 30f700000000 |         irmovl $0x0, %edi
+  0x163: 30f300000000 |         irmovl $0x0, %ebx
+  0x169: 6117         |         subl %ecx, %edi
+  0x16b: 2332         |         cmove %ebx, %edx
+                      | 
+                      |         # Now, %edx contains the 10's value of the BCD
+                      |         # %eax still has the original value of the BCD
+                      |         # Now Store the 1's value of the BCD into %ebx
+  0x16d: 30f30f000000 |         irmovl $0x0f, %ebx
+  0x173: 6203         |         andl %eax, %ebx # %ebx now has only the 1's decimal value
+                      | 
+                      |         # Test for bad BCD
+  0x175: 30f70a000000 |         irmovl $0x0a, %edi    # For comparison
+  0x17b: 6137         |         subl %ebx, %edi       # Is our 1's digit less than 10?
+  0x17d: 7138020000   |         jle error_out         # If not, error
+                      | 
+                      |         # Not we have our 10's decimal in %edx and our 1's decimal in %ebx
+                      |         # We'll sum them up in %eax
+  0x182: 30f000000000 |         irmovl $0, %eax
+  0x188: 30f10a000000 |         irmovl $0xa, %ecx
+  0x18e: 30f7ffffffff |         irmovl $-1, %edi
+                      | 
+                      |         # %eax = sum, %edx = 10's dec., %ebx = 1's dec.
+                      |         # %ecx = 10, %edi = -1
+  0x194:              | loop:
+  0x194: 2026         |         rrmovl %edx, %esi
+  0x196: 6066         |         addl %esi, %esi
+  0x198: 73a6010000   |         je loop_done
+  0x19d: 6010         |         addl %ecx, %eax   # Add 10 to sum
+  0x19f: 6072         |         addl %edi, %edx   # Decrement 10's dec
+  0x1a1: 7094010000   |         jmp loop
+                      | 
+  0x1a6:              | loop_done:        
+  0x1a6: 6030         |         addl %ebx, %eax   # Account for the 1's decimal
+  0x1a8: 90           |         ret               # Return with hex value of BCD in %eax
+                      | 
+                      | # Assumes hex value of the day is in register %eax
+                      | # and that the month value encodes a 31-day month
+  0x1a9:              | parse_31_day_month:
+                      |         # If day = 0, false_out
+  0x1a9: 2007         |         rrmovl %eax, %edi
+  0x1ab: 6077         |         addl %edi, %edi
+  0x1ad: 7319020000   |         je false_out
+                      | 
+                      |         # If day > 31, false_out
+  0x1b2: 30f71f000000 |         irmovl $31, %edi
+  0x1b8: 6107         |         subl %eax, %edi # %ecx = %ecx - %eax
+  0x1ba: 7219020000   |         jl false_out
+                      | 
+                      |         # Otherwise, we're good, so true_out
+  0x1bf: 70fa010000   |         jmp true_out
+                      | 
+  0x1c4:              | parse_30_day_month:
+                      |         # If day = 0, false_out
+  0x1c4: 2007         |         rrmovl %eax, %edi
+  0x1c6: 6077         |         addl %edi, %edi
+  0x1c8: 7319020000   |         je false_out
+                      | 
+                      |         # If day > 30, false out
+  0x1cd: 30f71e000000 |         irmovl $30, %edi
+  0x1d3: 6107         |         subl %eax, %edi
+  0x1d5: 7219020000   |         jl false_out
+                      | 
+                      |         # Otherwise, we're good, so true_out
+  0x1da: 70fa010000   |         jmp true_out
+                      | 
+  0x1df:              | parse_28_day_month:
+                      |         # If day= 0, false_out
+  0x1df: 2007         |         rrmovl %eax, %edi
+  0x1e1: 6077         |         addl %edi, %edi
+  0x1e3: 7319020000   |         je false_out
+                      | 
+                      |         # If day > 28, false_out
+  0x1e8: 30f71c000000 |         irmovl $28, %edi
+  0x1ee: 6107         |         subl %eax, %edi
+  0x1f0: 7219020000   |         jl false_out
+                      | 
+                      |         # Otherwise, we're good, so true_out
+  0x1f5: 70fa010000   |         jmp true_out
+                      | 
+  0x1fa:              | true_out:
+  0x1fa: 30f001000000 |         irmovl $0x01, %eax
+  0x200: 30f362020000 |         irmovl output, %ebx
+  0x206: 400300000000 |         rmmovl %eax, (%ebx)
+                      | 
+                      | 
+  0x20c: 30f366020000 |         irmovl end_pointer, %ebx
+  0x212: 504300000000 |         mrmovl (%ebx), %esp
+  0x218: 90           |         ret
+                      | 
+  0x219:              | false_out:
+  0x219: 30f000000000 |         irmovl $0x00, %eax
+  0x21f: 30f362020000 |         irmovl output, %ebx
+  0x225: 400300000000 |         rmmovl %eax, (%ebx)
+                      | 
+  0x22b: 30f366020000 |         irmovl end_pointer, %ebx
+  0x231: 504300000000 |         mrmovl (%ebx), %esp
+  0x237: 90           |         ret
+                      | 
+                      | 
+  0x238:              | error_out:
+  0x238: 30f00e000000 |         irmovl $0x0e, %eax
+  0x23e: 30f362020000 |         irmovl output, %ebx
+  0x244: 400300000000 |         rmmovl %eax, (%ebx)
+                      |  
+  0x24a: 30f366020000 |         irmovl end_pointer, %ebx
+  0x250: 504300000000 |         mrmovl (%ebx), %esp
+  0x256: 90           |         ret
+                      | 
+                      | 
+  0x260:              | .align 16
+  0x260:              | input:  # Asking about "March 32"
+  0x260: 04           |         .byte 0x04
+  0x261: 01           |         .byte 0x01
+                      | 
+  0x262:              | output: # Yes?
+  0x262: 0e000000     |         .long 0x0e
+                      | 
+  0x266:              | end_pointer:
+  0x266: 00000000     |         .long 0x00
+                      | 
+  0x500:              | .pos 0x500
+  0x500:              | stack:
+  0x500: ffffffff     |         .long 0xffffffff 

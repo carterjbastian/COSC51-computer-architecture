@@ -1,0 +1,48 @@
+# test6 - looper
+# Creates a simple loop to ensure keyboard-TTY interactions
+# are working.
+.pos 0
+
+# Try reading data from the keyboard
+check_kbd:
+        # Check if there's data to read from the keyboard
+        irmovl KBSR, %ecx     # Memory position of KBSR into ecx
+        mrmovl (%ecx), %ecx   # Value of KBSR address into %ecx
+        mrmovl (%ecx), %ecx   # Value of KBSR contents into %ecx
+
+        
+        # Is the KBSR 1?
+        irmovl $1, %ebx
+        subl %ecx, %ebx
+        je read_kbd # If KBSR == 1, read the kbd
+
+        jmp check_kbd
+        
+
+read_kbd:
+        # Read data from the keyboard
+        irmovl KBDR, %ecx     # Mem location of KBDR into %ecx
+        mrmovl (%ecx), %ecx   # Value of KBDR's address into %ecx
+        mrmovl (%ecx), %ecx   # Contents of KBDR into %ecx
+        jmp write_tty
+
+write_tty:
+        irmovl DDR, %ebx
+        mrmovl (%ebx), %ebx   # Address of DDR into %ebx
+        rmmovl %ecx, (%ebx)   # Write contents of KBDR into TTY fake ram
+        jmp check_kbd         # Start the loop again
+
+.pos 0x300
+KBSR:
+        .long 0x00fffe00
+
+KBDR:
+        .long 0x00fffe04
+
+DSR:
+        .long 0x00fffe08
+
+DDR:
+        .long 0x00fffe0c
+
+

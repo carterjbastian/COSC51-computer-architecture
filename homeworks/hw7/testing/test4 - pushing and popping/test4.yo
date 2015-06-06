@@ -1,0 +1,21 @@
+                      | # Testing pushing and popping (And nop)
+  0x000:              | .pos 0
+  0x000: 30f40c010000 |         irmovl stack, %esp
+  0x006: 30f1fecaedfe |         irmovl $0xfeedcafe, %ecx
+  0x00c: 30f0efbeadde |         irmovl $0xdeadbeef, %eax
+                      | 
+  0x012: a01f         |         pushl %ecx
+  0x014: a00f         |         pushl %eax
+                      | 
+  0x016: 10           |         nop
+  0x017: 10           |         nop
+                      | 
+  0x018: b01f         |         popl %ecx # %ecx <- 0xdeadbeef
+  0x01a: b00f         |         popl %eax # %eax <- 0xfeedcafe
+                      | 
+  0x01c: 00           |         halt
+                      | 
+                      | 
+  0x10c:              | .pos 0x10c
+  0x10c:              | stack:
+  0x10c: ffffffff     |         .long 0xffffffff

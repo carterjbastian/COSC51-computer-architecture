@@ -1,0 +1,53 @@
+                      | # Assembly code to test my enter_os and exit_os functions
+                      | # Also ensures that memory operations won't work without privelege
+                      | # Mode being zero.
+  0x000:              | .pos 0
+  0x000: 30f600000000 |         irmovl 0x0, %esi
+                      |         # Should start with privelage
+  0x006: 30f104030000 |         irmovl DDR, %ecx # %ecx<-0x304
+  0x00c: 501100000000 |         mrmovl (%ecx), %ecx # %ecx<-0x00ffe0x
+  0x012: 30f33d000000 |         irmovl $61, %ebx
+  0x018: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+                      |         #exit_os
+  0x01e: d000010000   |         exit_os   #Input by hand
+                      | 
+  0x023: 30f60e000000 |         irmovl 0xe, %esi # Should never get processed
+  0x029: 00           |         halt
+                      | 
+  0x02a:              | done: 
+  0x02a: 30f601000000 |         irmovl 0x1, %esi
+  0x030: 00           |         halt # Successful finish
+                      | 
+                      | 
+  0x031:              | error:
+  0x031: 30f60e000000 |         irmovl 0xe, %esi
+  0x037: 00           |         halt  # Unsuccessful finish
+                      | 
+  0x100:              | .pos 0x100
+                      |         # Should not print to os - not priveleged
+  0x100: 30f33e000000 |         irmovl $62, %ebx
+  0x106: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+                      |         #enter_os
+  0x10c: c000100000   |         enter_os    # Input by hand
+  0x111: 30f60e000000 |         irmovl 0xe, %esi
+                      | 
+                      | 
+                      | 
+  0x300:              | .pos 0x300
+  0x300:              | DSR:
+  0x300: 08feff00     |         .long 0x00fffe08
+                      | 
+  0x304:              | DDR:
+  0x304: 0cfeff00     |         .long 0x00fffe0c
+                      | 
+                      | 
+  0x1000:             | .pos 0x1000
+                      |         # Should print to IO - priveled enabled
+  0x1000: 30f33f000000|         irmovl $63, %ebx
+  0x1006: 403100000000|         rmmovl %ebx, (%ecx)
+                      | 
+  0x100c: 702a000000  |         jmp done
+                      | 
+  0x1011: 30f60e000000|         irmovl 0xe, %esi

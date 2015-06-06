@@ -1,0 +1,9 @@
+  0x000:              | .pos 0
+  0x000: 30f00a000000 |         irmovl $10, %eax
+  0x006: 30f601000000 |         irmovl 0x1, %esi    # Success indicator
+                      | 
+                      |         #memory trap
+  0x00c: e0           |         memory trap # Input by hand
+                      | 
+  0x00d: 30f60e000000 |         irmovl 0xe, %esi    # Indicate error
+  0x013: 00           |         halt

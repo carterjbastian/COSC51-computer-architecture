@@ -1,0 +1,29 @@
+  0x000:              | .pos 0
+                      | 
+                      | # immediate addressing!
+  0x000: 30f144332211 | 	irmovl $0x11223344, %ecx
+                      | 	
+                      | # register addressing!
+  0x006: 2012         | 	rrmovl %ecx, %edx
+                      | 
+                      | # indirect addressinng!
+  0x008: 30f360000000 | 	irmovl target2, %ebx	
+  0x00e: 507300000000 |         mrmovl (%ebx), %edi
+  0x014: 401300000000 | 	rmmovl %ecx, (%ebx)
+                      | 	
+                      | # absolute addressing!
+  0x01a: 401f50000000 | 	rmmovl %ecx, 0x50
+                      | 
+                      | # base + displacement
+  0x020: 401304000000 | 	rmmovl %ecx, 4(%ebx)	
+                      | 
+                      | # goodbye!
+  0x026: 00           | 	halt
+                      | 
+                      | # a region for the first write
+  0x050:              | .pos 0x50
+  0x050: efbeadde     | target1: .long 0xdeadbeef
+                      | 
+  0x060:              | .align 16
+  0x060: fecaedfe     | target2: .long 0xfeedcafe
+                      | 

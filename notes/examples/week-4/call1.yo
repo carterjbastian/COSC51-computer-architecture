@@ -1,0 +1,42 @@
+                      | # sws, cs51, 2015
+                      | 
+  0x000:              | .pos 0
+                      | 	# set up stack
+  0x000: 30f40c010000 | 	irmovl stack, %esp
+                      | 
+                      | 	
+  0x006: 30f1fecaadde | 	irmovl $0xdeadcafe, %ecx
+                      | 
+  0x00c: 30f0fdffffff | 	irmovl $0xFFFFFFFD, %eax
+  0x012: 8018000000   | 	call NEGATE
+  0x017: 00           | 	halt
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 	# subroutine: %eax <- - %eax
+  0x018:              | NEGATE:
+  0x018: a03f         | 	pushl %ebx
+                      | 
+  0x01a: 30f3ffffffff | 	irmovl $0xFFFFFFFF,%ebx
+  0x020: 6330         | 	xorl %ebx, %eax
+  0x022: 30f301000000 | 	irmovl $0x01, %ebx
+  0x028: 6030         | 	addl %ebx, %eax
+                      | 
+  0x02a: b03f         | 	popl %ebx
+  0x02c: 90           | 	ret
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 
+                      | 
+  0x10c:              | .pos 0x10C
+  0x10c:              | stack: 
+  0x10c: ffffffff     |         .long 0xFFFFFFFF # the top of the empty stack
+                      | 
+                      | 

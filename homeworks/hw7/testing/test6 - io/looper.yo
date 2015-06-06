@@ -1,0 +1,48 @@
+                      | # test6 - looper
+                      | # Creates a simple loop to ensure keyboard-TTY interactions
+                      | # are working.
+  0x000:              | .pos 0
+                      | 
+                      | # Try reading data from the keyboard
+  0x000:              | check_kbd:
+                      |         # Check if there's data to read from the keyboard
+  0x000: 30f100030000 |         irmovl KBSR, %ecx     # Memory position of KBSR into ecx
+  0x006: 501100000000 |         mrmovl (%ecx), %ecx   # Value of KBSR address into %ecx
+  0x00c: 501100000000 |         mrmovl (%ecx), %ecx   # Value of KBSR contents into %ecx
+                      | 
+                      |         
+                      |         # Is the KBSR 1?
+  0x012: 30f301000000 |         irmovl $1, %ebx
+  0x018: 6113         |         subl %ecx, %ebx
+  0x01a: 7324000000   |         je read_kbd # If KBSR == 1, read the kbd
+                      | 
+  0x01f: 7000000000   |         jmp check_kbd
+                      |         
+                      | 
+  0x024:              | read_kbd:
+                      |         # Read data from the keyboard
+  0x024: 30f104030000 |         irmovl KBDR, %ecx     # Mem location of KBDR into %ecx
+  0x02a: 501100000000 |         mrmovl (%ecx), %ecx   # Value of KBDR's address into %ecx
+  0x030: 501100000000 |         mrmovl (%ecx), %ecx   # Contents of KBDR into %ecx
+  0x036: 703b000000   |         jmp write_tty
+                      | 
+  0x03b:              | write_tty:
+  0x03b: 30f30c030000 |         irmovl DDR, %ebx
+  0x041: 503300000000 |         mrmovl (%ebx), %ebx   # Address of DDR into %ebx
+  0x047: 401300000000 |         rmmovl %ecx, (%ebx)   # Write contents of KBDR into TTY fake ram
+  0x04d: 7000000000   |         jmp check_kbd         # Start the loop again
+                      | 
+  0x300:              | .pos 0x300
+  0x300:              | KBSR:
+  0x300: 00feff00     |         .long 0x00fffe00
+                      | 
+  0x304:              | KBDR:
+  0x304: 04feff00     |         .long 0x00fffe04
+                      | 
+  0x308:              | DSR:
+  0x308: 08feff00     |         .long 0x00fffe08
+                      | 
+  0x30c:              | DDR:
+  0x30c: 0cfeff00     |         .long 0x00fffe0c
+                      | 
+                      | 

@@ -1,0 +1,16 @@
+# Debugging memory - register moving
+.pos 0
+        irmovl mem, %eax
+        irmovl $3, %ebx
+
+        rmmovl %ebx, 4(%eax)
+        mrmovl (%eax), %ecx
+        mrmovl 4(%eax), %edx
+
+        halt
+
+
+
+.pos 0x10c
+mem:
+        .long 0xffffffff

@@ -1,0 +1,23 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\b\fs24 \cf0 HW9 Q2 Response:
+\b0 \
+\
+If you look at q2_output.txt, you'll see the results (number of hits, misses, and addresses as well as hit and miss rates) for simulating caching for each of the four cache schemes from q1 (direct mapped, 2-way set associative, 4-way set associative, and fully associative).\
+\
+Notice that the conventional wisdom does hold up. Each time you increase the associativity (increasing the value of E, or the number of lines per set), the hit rate increases (and conversely, the miss rate decreases), but by a smaller percentage with each increase in E.\
+\
+Specifically, moving from direct-mapped (hit rate of 95.7556%) to 2-way set associative (hit rate of 97.4273%) results in a 1.6717% improvement to the total hit rate (refers to hit_rate_2way - hit_rate_direct_mapped). This is 1.7458% improvement on the hit rate of the direct-mapped scheme (refers to the total hit rate scaled to the hit rate of the direct-mapped scheme, or hit_rate_2way - hit_rate_direct_mapped / hit_rate_direct_mapped).\
+\
+However, moving to 2-way set associative to 4-way set associative (hit rate of 97.8284%) results only in a 0.4011% total hit rate improvement. This is a 0.4117% improvement to the hit rate of the 2-way set associative scheme.\
+\
+Further, moving to a fully associative scheme (hit rate of 97.856%) results only in a 0.0276% total hit rate improvement. This is only a 0.0282% improvement to the hit rate of the 4-way set associative scheme.\
+\
+The rate of improvement (aka the scaled improvement to the hit rate) decreases by a factor of about 4.2 for the first two shifts (from less-associative scheme to more-associative scheme, or specifically direct->2-way and 2-way->4-way), and then by a factor of about 14.6 for the second two shifts (2-way->4-way and 4-way->fully-associative).\
+\
+This demonstrates the diminishing returns principle.\
+}

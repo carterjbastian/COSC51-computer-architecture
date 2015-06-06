@@ -1,0 +1,33 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\b\fs24 \cf0 HW6 Q1 Testing and Documentation:
+\b0 \
+\
+\ul NOTE:\ulnone  I feel like the intended behavior of the io circuit in this problem was described pretty vaguely in the instructions and answered questions from Piazza. I implemented the circuit as I understand it after asking multiple questions on Piazza and attending multiple office hours sessions with Vijay. I feel like there may be other interpretations of the problem from mine, but I feel like I put in the best effort I could in figuring out what this circuit is supposed to do, so I will describe that functionality below. I hope you consider this while grading this part of the homework.\
+\
+\ul Documentation:\
+\ulnone \
+My IO circuit uses 32-bit and-ing and a comparator to check if the address in is addressing our "fake RAM" io registers. We also use a register to check which of the four registers (KBSR = 0x00FFFE00, KBDR = 0x00FFFE04, DSR = 0x00FFFE08, DDR = 0x00FFFE0C). If we are not looking at one of those registers and reading (AKA Read = 1), then the output is hanging wires.\
+\
+If we are reading and the address is pointing to the KBDR, the output is a 32-bit word, in which the last byte contains the data currently in the KBDR.\
+\
+If we read the KBSR, it will output a 32-bit word in which the last bit is 1 if the keyboard has one or more characters in the buffer that have not been read in to the KBDR and is 0 otherwise.\
+\
+If we read the DSR, it will always output a 32-bit word in which the last bit is 1 \'96 the TTY implemented in Logisim is always ready to output a new character (there is no delay).\
+\
+If we read the DDR, it will output a 32-bit word in which the last byte contains the ASCII value of the last character clocked into the DDR.\
+\
+If the KBSR has a value of 1 and you clock the circuit (while not writing), the ASCII encoding of the next character in the keyboard buffer is stored in the KBDR. This value can then be read as data.\
+\
+Further, if you are writing (write = 1) and you are addressing the DDR and you clock the IR circuit, it will write the ASCII encoding in the Data In to the DDR. This value can be clocked to the TTY by turning off write and clocking the circuit.\
+\
+At Vijay's recommendation, I did not allow the DDR to get data directly from the KBDR (instead the programmer has to read the KBDR's data as RAM and then write it to the DDR in two steps).\
+\
+So, overall, the circuit provides the functionality to retrieve data from the IO registers and write data to the DDR. It also allows you to get information from the Logisim keyboard and to write to the Logisim TTY.\
+\
+\ul Testing:\ulnone \
+I manually tested my io sub-circuit could do what it's intended to do with each given input or functionality (different combinations of RAMaddr, RAMdata, RAMwrite, RAMread, and data from the keyboard. It worked as intended.}

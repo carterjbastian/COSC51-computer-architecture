@@ -1,0 +1,103 @@
+# Testing control flow: jxx, call, ret
+.pos 0
+        # Set up stack
+        irmovl stack, %esp
+        irmovl $1, %eax # Success/error indicator
+        irmovl $5, %ecx
+        irmovl $1, %edx
+
+        # Test absolute jumping
+        jmp jmp_test #Should work
+        irmovl $0xe, %eax
+        halt
+
+jmp_test:
+        # Set the condition codes for testing
+        rrmovl %edx, %ebx #dummy value
+        subl %ecx, %ebx   #compare by evaluating 1 - 5
+        
+        # These shouldn't work
+        je error
+        jg error
+        jge error
+
+        jne jne_test # Should jump
+        jmp error
+
+jne_test:
+        jle jle_test # Should jump
+        jmp error
+
+jle_test:
+        jl jl_test # Should jump
+        jmp error
+
+jl_test:
+
+        # Switch up the order
+        rrmovl %ecx, %ebx
+        subl %edx, %ebx   #compare by evaluating 5 - 1
+
+        # These shouldn't jump
+        je error
+        jl error
+        jle error
+
+        jg jg_test
+        jmp error
+
+jg_test:
+        jge jge_test
+        jmp error
+
+jge_test:
+
+        # One more switch
+        rrmovl %ecx, %ebx
+        subl %ecx, %ebx
+
+        jne error #shouldn't jump
+
+        je call_ret_test # Should jump
+        jmp error
+
+call_ret_test:
+        # At this point, we have tested all jumping and
+        # Conditional jumps.
+
+        rrmovl %eax, %ebp #Move the success indicator for jmping to %ebp
+        irmovl $0xe, %eax
+
+
+        # Now we test call / ret
+
+        irmovl $0xdeadbeef, %ecx
+        rrmovl %ecx, %edx
+
+        call subroutine_1
+        irmovl $0xbeefface, %esi
+        rmmovl %esi, 16(%esp)
+        irmovl $0xabaddad, %edx
+        call subroutine_2
+
+        irmovl $1, %eax
+        halt
+        
+
+subroutine_1:
+        rmmovl %edx, 8(%esp)
+        irmovl $0xcafefeed, %edx
+        call subroutine_2
+        ret
+
+subroutine_2:
+        rmmovl %edx, 16(%esp)
+        ret
+
+error:
+        irmovl $0xeeeeeeee, %eax
+        halt
+
+.pos 0x300
+stack:
+        .long 0xffffffff

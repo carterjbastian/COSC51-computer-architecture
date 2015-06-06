@@ -1,0 +1,44 @@
+                      | # Test 6.1 - IO writing to the TTY from memory
+                      | # tests that interactions with TTY work
+  0x000:              | .pos 0
+                      |         # Nothing in the register yet...
+  0x000: 30f600000000 |         irmovl $0, %esi #Success indicator (1=success)
+                      | 
+                      |         # KBSR should be 0
+  0x006: 30f300020000 |         irmovl KBSR, %ebx
+  0x00c: 501300000000 |         mrmovl (%ebx), %ecx
+  0x012: 503100000000 |         mrmovl (%ecx), %ebx
+  0x018: 6033         |         addl %ebx, %ebx
+  0x01a: 7450000000   |         jne error
+                      |   
+  0x01f: 30f30c020000 |         irmovl DDR, %ebx
+  0x025: 501300000000 |         mrmovl (%ebx), %ecx
+                      |   
+                      |         # Writing to the DDR register should write to the TTY
+  0x02b: 30f061000000 |         irmovl 0x61, %eax
+  0x031: 400100000000 |         rmmovl %eax, (%ecx)
+  0x037: 30f062000000 |         irmovl 0x62, %eax
+  0x03d: 400100000000 |         rmmovl %eax, (%ecx)
+  0x043: 30f063000000 |         irmovl 0x63, %eax
+  0x049: 400100000000 |         rmmovl %eax, (%ecx)
+                      |         # "abc" should now be in the tty
+                      | 
+  0x04f: 00           |         halt
+                      | 
+                      | 
+  0x050:              | error:
+  0x050: 30f60e000000 |         irmovl $0xe, %esi
+  0x056: 00           |         halt
+                      | 
+  0x200:              | .pos 0x200
+  0x200:              | KBSR:
+  0x200: 00feff00     |         .long 0x00fffe00
+                      | 
+  0x204:              | KBDR:
+  0x204: 04feff00     |         .long 0x00fffe04
+                      | 
+  0x208:              | DSR:
+  0x208: 08feff00     |         .long 0x00fffe08
+                      | 
+  0x20c:              | DDR:
+  0x20c: 0cfeff00     |         .long 0x00fffe0c

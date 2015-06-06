@@ -1,0 +1,31 @@
+                      | # Assembly code to demonstrate the newly implemented
+                      | # shr instruction.
+  0x000:              | .pos 0
+  0x000: 30f600000000 |         irmovl 0x0, %esi      # Success indicator
+                      |         
+                      |         # Test 1
+  0x006: 30f1ffffffff |         irmovl 0xffffffff, %ecx
+  0x00c: 30f3ffffff7f |         irmovl 0x7fffffff, %ebx  # correct results
+                      |         # shr %ecx, %eax
+  0x012: c410         |         shr %ecx, %eax          #Input by hand 
+  0x014: 6130         |         subl %ebx, %eax
+  0x016: 7322000000   |         je test_1
+                      | 
+  0x01b: 30f60e000000 |         irmovl 0xe, %esi        # Halt with error if it fails
+  0x021: 00           |         halt
+                      | 
+  0x022:              | test_1:
+  0x022: 30f601000000 |         irmovl 0x1, %esi      # Indicate success for first shift
+  0x028: 30f700000000 |         irmovl 0x0, %edi      # Success indicator for second shift
+                      | 
+  0x02e: 30f101000000 |         irmovl 0x1, %ecx
+  0x034: c410         |         shr %ecx, %eax        # Input by hand
+                      |         # shr %ecx, %eax
+  0x036: 7342000000   |         je test_2
+                      | 
+  0x03b: 30f70e000000 |         irmovl 0xe, %edi      # Halt with error if shift fails
+  0x041: 00           |         halt
+                      | 
+  0x042:              | test_2:
+  0x042: 30f701000000 |         irmovl 0x1, %edi      # Indicate success for second shift
+  0x048: 00           |         halt

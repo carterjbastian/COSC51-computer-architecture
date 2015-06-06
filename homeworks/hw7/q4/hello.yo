@@ -1,0 +1,61 @@
+                      | # HW7 Q4 – hello.ys
+                      | # Writes "hello world!" to the TTY
+  0x000:              | .pos 0
+  0x000: 30f10c030000 |         irmovl DDR, %ecx      # Mem location of DDR's address
+  0x006: 501100000000 |         mrmovl (%ecx), %ecx   # DDR's address to %ecx
+                      | 
+                      |         # Write "h"
+  0x00c: 30f368000000 |         irmovl 0x68, %ebx
+  0x012: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+                      |         # Write "e"
+  0x018: 30f365000000 |         irmovl 0x65, %ebx
+  0x01e: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+                      |         # And so forth
+  0x024: 30f36c000000 |         irmovl 0x6c, %ebx # l
+  0x02a: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+  0x030: 30f36c000000 |         irmovl 0x6c, %ebx # l
+  0x036: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+  0x03c: 30f36f000000 |         irmovl 0x6f, %ebx # o
+  0x042: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+  0x048: 30f320000000 |         irmovl 0x20, %ebx # space
+  0x04e: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+                      | 
+  0x054: 30f377000000 |         irmovl 0x77, %ebx # w
+  0x05a: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+  0x060: 30f36f000000 |         irmovl 0x6f, %ebx # o
+  0x066: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+  0x06c: 30f372000000 |         irmovl 0x72, %ebx # r
+  0x072: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+  0x078: 30f36c000000 |         irmovl 0x6c, %ebx # l
+  0x07e: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+  0x084: 30f364000000 |         irmovl 0x64, %ebx # d
+  0x08a: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+  0x090: 30f321000000 |         irmovl 0x21, %ebx # !
+  0x096: 403100000000 |         rmmovl %ebx, (%ecx)
+                      | 
+  0x09c: 00           |         halt
+                      | 
+                      | # Memory mapped io
+  0x300:              | .pos 0x300
+  0x300:              | KBSR:
+  0x300: 00feff00     |         .long 0x00fffe00
+                      | 
+  0x304:              | KBDR:
+  0x304: 04feff00     |         .long 0x00fffe04
+                      | 
+  0x308:              | DSR:
+  0x308: 08feff00     |         .long 0x00fffe08
+                      | 
+  0x30c:              | DDR:
+  0x30c: 0cfeff00     |         .long 0x00fffe0c

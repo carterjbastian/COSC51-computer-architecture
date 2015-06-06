@@ -1,0 +1,57 @@
+  0x000:              | .pos 0
+  0x000: 30f600000000 |         irmovl 0x0, %esi  # success indicator
+  0x006: 30f700000000 |         irmovl 0x0, %edi  # program indicator (for os)
+  0x00c: 30f301000000 |         irmovl $1, %ebx   # Incrementer
+  0x012: 30f000000000 |         irmovl $0, %eax   # Val
+  0x018: 30f105000000 |         irmovl $5, %ecx   # End val for looper
+                      |         #enter_os
+  0x01e: c000100000   |         enter_os
+                      | 
+  0x023:              | error:
+  0x023: 30f60e000000 |         irmovl 0xe, %esi
+  0x029: 00           |         halt
+                      | 
+  0x200:              | .pos 0x200
+  0x200:              | looper:
+  0x200: 6030         |         addl %ebx, %eax
+  0x202: 2002         |         rrmovl %eax, %edx
+  0x204: 6112         |         subl %ecx, %edx
+  0x206: 7400010000   |         jne 0x100 #Edited by hand
+                      | 
+                      |         #enter_os
+  0x20b: c000100000   |         enter_os
+                      | 
+                      | 
+  0x300:              | .pos 0x300
+  0x300:              | NullPointer:
+  0x300: 30f601000000 |         irmovl 0x1, %esi #indicate success
+  0x306: 30f200000000 |         irmovl 0x0, %edx
+  0x30c: 500200000000 |         mrmovl (%edx), %eax
+                      |         #enter_os
+  0x312: c000100000   |         enter_os
+                      | 
+                      | 
+                      | 
+                      | # The OS to control the programs
+  0x1000:              | .pos 0x1000
+  0x1000: 6277         |         andl %edi, %edi
+  0x1002: 730c100000   |         je run1
+  0x1007: 7029100000   |         jmp run2
+                      | 
+  0x100c:              | run1:
+  0x100c: 30f701000000 |         irmovl 0x1, %edi
+  0x1012: 30f501020000 |         irmovl 0x201, %ebp
+  0x1018: 30f204200000 |         irmovl 0x2004, %edx
+  0x101e: 405200000000 |         rmmovl %ebp, (%edx)
+                      | 
+                      |         #exit_os
+  0x1024: d000010000   |         exit_os
+                      | 
+                      | 
+  0x1029:              | run2:
+  0x1029: 30f501030000 |         irmovl 0x301, %ebp
+  0x102f: 30f204200000 |         irmovl 0x2004, %edx
+  0x1035: 405200000000 |         rmmovl %ebp, (%edx)
+                      | 
+                      |         #exit_os
+  0x103b: d000010000   |         exit_os

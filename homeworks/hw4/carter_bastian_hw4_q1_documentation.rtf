@@ -1,0 +1,23 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 \ul \ulc0 Question 1: ALU\ulnone \
+I had many sub-circuits for this problem, each of which was individually tested.\
+For the subtraction sub-circuit, I simply used a baked-in 32-bit adder, adding valA and the 2's-compliment inverse of valB, and then incrementing by 1. This results in valA - valB.\
+\
+To build the cmp (comparator) sub-circuit, I started with a single-bit comparator (which can be forced to have a greater-than or less-than output with the "Force Output" and "Force Greater-Than" input bits). This is extended to the byte cmp (which compares the bytes bitwise from left to right and also has a force-output functionality) and then to the same case cmp sub-circuit (which compares two 32-bit integers of the same sign). The generalized cmp sub-circuit checks if the two values are the same case or the different case, and uses the "same case cmp" and "diff case cmp" to send the appropriate output.\
+\
+The overall ALU circuit works by using demultiplexers to send valA and valB to only the specified aluOP (by the aluOP input); a baked-in 32-bit adder, a custom-built 32-bit subtractor, a 32-bit AND gate, and a 32-bit XOR gate. 32 0-bits are sent to the 3 unspecified operations. The results of all four OPs (three of which will be only 32-bit binary strings of 0s and one of which is valE) are bit-wise OR'd together to give us a single wire with valE. \
+\
+Testing for the zero-flag involves using our custom cmp sub-circuit to compare valE with 0x00000000 for equality. Testing for the sign-flag involves checking if the first bit of valE is 1 or 0.\
+\
+Addition overflow occurs if and only if we're adding two values (both of which are of the same sign) and two positive inputs result in a negative output OR two negative inputs result in a positive or zero-valued input.\
+\
+Subtraction overflow occurs if and only if we're subtracting two value (not of the same sign) and subtracting a negative input from a positive input results in a negative output OR subtracting a positive input from a negative input results in a positive input. \
+\
+Overflow does not occur in XOR or AND operations. I check for the addition and subtraction cases by checking the cases of the inputs and testing for an improperly signed output (valE) as per the rules above (via comparison of valE with 0x00000000 and my cmp sub-circuit).\
+\
+I tested my ALU in the TESTING ALU circuit. I tested the output of each of the four operation types against what the baked-in Logisim components' output would normally be. (Note, I did not use baked-in components that we didn't cover in class EXCEPT for testing my results). I also tested edge cases of addition and subtraction overflow (with all combinations of positive/negative), 0-valued output, and negative-valued output.}

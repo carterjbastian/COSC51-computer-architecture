@@ -1,0 +1,86 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;\f2\fmodern\fcharset0 Courier-Oblique;
+}
+{\colortbl;\red255\green255\blue255;\red35\green31\blue32;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720
+
+\f0\b\fs24 \cf2 Homework 5 Q2:
+\b0 \
+\
+Documentation:\
+Notice that I tested these commands by writing assembly code with my answers and comparing my .yo files to the original problem, but I didn't do so until after completing the problem in its entirety. That was just for checking my answers.\
+\
+
+\b A.
+\b0  
+\i 0x100:	30 f3 fc ff ff ff   40 63 00 08 00 00   00
+\i0 \
+
+\f1 \
+
+\f2\i Solution:
+\f1\i0 \
+0x100: irmovl $0xfffffffc, %ebx	(30 f3 fc ff ff ff)\
+0x106: rmmovl %esi, 2048(%ebx)	(40 63 00 08 00 00)\
+0x10c: halt					(00)
+\f2\i \
+
+\f1\i0 \
+
+\f0\b B.
+\b0  
+\i 0x200:	a0 6f   80 08 02 00 00   00   30 f3 0a 00 00 00   90
+\f2 \
+\
+Solution:
+\f1\i0 \
+0x200: pushl %esi				(a0 6f)\
+0x202: call $0x208				(80 08 02 00 00)\
+0x207: halt					(00)\
+0x208: irmovl $0x0000000a, %ebx	(30 f3 0a 00 00 00)\
+0x20e: ret					(90)
+\f2\i \
+\
+\
+
+\f0\i0\b C.
+\b0  
+\i 0x300:	50 54 07 00 00 00   10   f0   b0 1f
+\f2 \
+\
+Solution:\
+
+\f1\i0 0x300: mrmovl 7(%esp), %ebp		(50 54 07 00 00 00)\
+0x306: nop					(10)\
+0x307: invalid. no instruction starts with f0 (f0)\
+\
+
+\f2\i \
+
+\f0\i0\b D.
+\b0  
+\i 0x400:	61 13   73 00 04 00 00   00
+\f2 \
+\
+Solution:\
+
+\f1\i0 0x400: subl %ecx, %ebx			(61 13)\
+0x402: je $0x400				(73 00 04 00 00)\
+0x407: halt					(00)\
+\
+
+\f2\i \
+
+\f0\i0\b E.
+\b0  
+\i 0x500:	63 62   a0 f0\
+
+\f1\i0 \
+
+\f2\i Solution:
+\f1\i0 \
+0x500: xorl %esi, %edx			(63 62)\
+0x502: invalid instruction. should be "a0 0f" so 							that pushl pushes the value at %eax on to 							the stack. Since the "f" comes first in the second byte, this \
+	instruction is invalid. (a0 f0)}

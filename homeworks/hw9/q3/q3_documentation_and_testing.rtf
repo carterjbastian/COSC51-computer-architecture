@@ -1,0 +1,23 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\b\fs24 \cf0 HW9 Question 3 Documentation and Testing
+\b0 \
+\
+\
+\ul Documentation:\ulnone \
+This program creates two virtual cache simulators and two trace simulators \'96 each initially identical (AKA a 2-way set associative cache model). One is for ver1.txt and the other is for ver2.txt. I then go through and simulate the trace on each virtual cache object.\
+\
+To calculate time cost, I've assigned each miss a value of "50 time units" and each hit a value of "1 time unit". Then at the end of the C program, I compare the hypothetical total cost (in time units) of each trace.\
+\
+For further explanation and details, see inline comments in the code and my response in q3_response.txt.\
+\
+Note: in order to run the code appropriately, you need to add ver1.txt and ver2.txt as the command line arguments in that order. eg:\
+\
+./Q3 ver1.txt ver2.txt > q3_output.txt\
+\
+\ul Testing:\ulnone \
+I couldn't test the validity of my results, but given the accuracy of my testing in q1, I've taken the coherent, principled results (as explain in my "q2_response" document) to indicate that I completed this question successfully.}
